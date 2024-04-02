@@ -22,6 +22,6 @@
 11. CRUD (Create, Read, Update, Delete) data berita.
 12. Rekap data simpan, pinjam berbentuk .pdf
 
-- Link Demo : https://sikoma.000webhostapp.com/
+- Link Demo : 
 1. Username : admin
 2. Password : admin
