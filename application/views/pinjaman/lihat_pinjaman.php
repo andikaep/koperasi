@@ -24,6 +24,8 @@
       <?php endif; ?>
       <!-- Alert -->
       
+      <script>
+// Tampilkan alert jika pesan flashdata berhasil diset
 <?php if ($this->session->set_flashdata('success')): ?>
   <div class="box-body">
           <div class="alert alert-info alert-dismissible">

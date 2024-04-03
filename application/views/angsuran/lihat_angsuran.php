@@ -2,6 +2,13 @@
 <html>
 <?php $this->load->view("admin/_includes/head.php") ?>
 <body class="hold-transition skin-blue sidebar-mini">
+<style>
+    .last-row-before-next-loan {
+    background-color: #f2dede; /* Ganti dengan warna latar belakang yang Anda inginkan */
+    color: #a94442; /* Ganti dengan warna teks yang Anda inginkan */
+    /* Anda juga dapat menambahkan properti CSS lainnya sesuai kebutuhan */
+}
+</style>
 <div class="wrapper">
 
   <?php $this->load->view("admin/_includes/header.php") ?>
@@ -67,7 +74,8 @@
                   <tbody>
                   
                     <?php $no = 1;?>
-                    <?php foreach ($angsuran as $value): ?>
+                    <?php $totalRows = count($angsuran); ?>
+                    <?php foreach ($angsuran as $key => $value): ?>
                       <?php 
     // Hitung total angsuran yang telah dibayarkan untuk pinjaman ini
     $total_angsuran_dibayarkan = $this->db->query("SELECT SUM(jumlah_angsuran) AS total_angsuran FROM angsuran WHERE id_pinjaman = '{$value->id_pinjaman}'")->row()->total_angsuran;
@@ -80,9 +88,14 @@
 
     $total_pinjaman_bunga = $value->jumlah_pinjaman + ($value->jumlah_pinjaman * $value->bunga / 100);
 
+    // Tentukan nomor pinjaman saat ini dan nomor pinjaman berikutnya
+    $currentNoPinjaman = $value->no_pinjaman;
+    $nextNoPinjaman = ($key + 1 < count($angsuran)) ? $angsuran[$key + 1]->no_pinjaman : null;
+
     ?>
     
-                      <tr>
+                      
+    <tr <?php if ($nextNoPinjaman !== null && $currentNoPinjaman !== $nextNoPinjaman): ?>class="last-row-before-next-loan"<?php endif; ?>>
                         <td><?php cetak($no++) ?></td>
                          <td><?php cetak($value->nama)  ?></td>
                         <td><?php cetak($value->no_pinjaman)  ?></td>

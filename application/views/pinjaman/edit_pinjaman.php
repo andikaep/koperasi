@@ -27,6 +27,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       <?php endif; ?>
       <!-- Alert -->
+      <script>
+// Tampilkan alert jika pesan flashdata berhasil diset
+<?php if ($this->session->set_flashdata('success')): ?>
+  <div class="box-body">
+          <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-info"></i>Alert!</h4>
+    <?php echo $this->session->set_flashdata('success'); ?>
+    </div>
+        </div>
+<?php endif; ?>
+</script>
 
     <section class="content-header">
       <h1>

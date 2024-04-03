@@ -27,6 +27,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       <?php endif; ?>
       <!-- Alert -->
+      <script>
+// Tampilkan alert jika pesan flashdata berhasil diset
+<?php if ($this->session->set_flashdata('success')): ?>
+  <div class="box-body">
+          <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-info"></i>Alert!</h4>
+    <?php echo $this->session->set_flashdata('success'); ?>
+    </div>
+        </div>
+<?php endif; ?>
+</script>
 
     <section class="content-header">
       <h1>
@@ -54,11 +66,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <!-- form start -->
             <form role="form" action="<?php echo base_url('pinjaman/add/'.$anggota->id_anggota) ?>" method="post">
               <input type="hidden" name="id_anggota" value="<?php echo $anggota->id_anggota?>" />
+              <?php
+// Ambil nomor pinjaman terakhir dari database
+$lastPinjaman = $this->db->query("SELECT MAX(no_pinjaman) AS last_pinjaman FROM pinjaman")->row()->last_pinjaman;
 
+// Jika ada nomor pinjaman terakhir, tambahkan 1 untuk mendapatkan nomor pinjaman baru
+if ($lastPinjaman !== null) {
+    $nextPinjaman = $lastPinjaman + 1;
+} else {
+    // Jika tidak ada nomor pinjaman terakhir, nomor pinjaman baru akan menjadi 1
+    $nextPinjaman = 1;
+}
+?>
               <div class="box-body">
                 <div class="form-group">
                   <label>No Pinjaman</label>
-                  <input name="no_pinjaman" class="form-control <?php echo form_error('no_pinjaman') ? 'is-invalid':'' ?>" placeholder="Masukan No Pinjaman" type="text"/>
+                  <input name="no_pinjaman" class="form-control <?php echo form_error('no_pinjaman') ? 'is-invalid':'' ?>" placeholder="Masukan No Pinjaman" type="text" value="<?php echo $nextPinjaman ?>" readonly />
                   <div class="invalid-feedback">
                     <?php echo form_error('no_pinjaman') ?>
                   </div>
