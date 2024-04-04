@@ -110,8 +110,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Tambahkan script JavaScript di bagian bawah -->
 <script>
-    // Tambahkan kode ini ke dalam satu blok skrip JavaScript
-    <!-- Tambahkan kode ini ke dalam tag <script> -->
     document.addEventListener("DOMContentLoaded", function() {
         var inputJumlah = document.getElementById('jumlah');
         var terbilangElem = document.getElementById('terbilang');

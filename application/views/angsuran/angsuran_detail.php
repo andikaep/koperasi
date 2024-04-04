@@ -2,24 +2,17 @@
 <html>
 <?php $this->load->view("admin/_includes/head.php") ?>
 <body class="hold-transition skin-blue sidebar-mini">
-<style>
-    .last-row-before-next-loan {
-    background-color: #f2dede; /* Ganti dengan warna latar belakang yang Anda inginkan */
-    color: #a94442; /* Ganti dengan warna teks yang Anda inginkan */
-    /* Anda juga dapat menambahkan properti CSS lainnya sesuai kebutuhan */
-}
-</style>
-<div class="wrapper">
+  <div class="wrapper">
 
-  <?php $this->load->view("admin/_includes/header.php") ?>
-  <?php $this->load->view("admin/_includes/sidebar.php") ?>
+    <?php $this->load->view("admin/_includes/header.php") ?>
+    <?php $this->load->view("admin/_includes/sidebar.php") ?>
 
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
 
-     <!-- Alert -->
+      <!-- Alert -->
       <?php if ($this->session->flashdata('success')): ?>
         <div class="box-body">
           <div class="alert alert-info alert-dismissible">
@@ -30,7 +23,6 @@
         </div>
       <?php endif; ?>
       <!-- Alert -->
-
       <script>
 // Tampilkan alert jika pesan flashdata berhasil diset
 <?php if ($this->session->set_flashdata('success')): ?>
@@ -44,31 +36,36 @@
 <?php endif; ?>
 </script>
 
+      <section class="content-header">
+        <h1>
+          Kelola
+          <small>Data Anggota Koperasi</small>
+        </h1>
+        <ol class="breadcrumb">
+          <li><a href="#"><i class="fa fa-fw fa-child"></i> Anggota</a></li>
+          <li><a href="<?php echo base_url('angsuran') ?>">Lihat Data Anggota</a></li>
+        </ol>
+      </section>
 
-    <section class="content-header">
-      <h1>
-        Kelola
-        <small>Data Angsuran</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-fw fa-user-plus"></i> Pinjaman</a></li>
-        <li><a href="#">Lihat Data Pinjaman</a></li>
-      </ol>
-    </section>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header">
-              <a href="<?php echo base_url('angsuran/listPinjamanAnggota') ?>" class="btn btn-tosca"><i class="fa fa-fw fa-plus"></i>Tambah</a>
-              <button class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Data</button>
-              <button class="btn btn-ijo"><i class="fa fa-fw fa-upload"></i>Import Data</button>
-            </div>
-            <!-- /.box-header -->
+      <!-- Main content -->
+      <section class="content">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="box">
+              <!-- /.box-header -->
             <div class="box-body table-responsive">
-              <table id="example1" class="table table-bordered table-hover">
+              <div class="box-header">
+              <h3 class="label label-primary" style="font-size: 12px; margin-right: -20px !important;">Detail Angsuran</h3>
+    <!-- Tampilkan nama peminjam -->
+    <?php if (!empty($angsuran_detail)): ?>
+    <h4><strong><span style="color: blue;"><?php echo $angsuran_detail[0]->nama; ?></span></strong></h4>
+    <h4>No Pinjaman: <strong><?php echo $angsuran_detail[0]->no_pinjaman; ?></strong></h4>
+    <?php else: ?>
+    <h4>Data tidak ditemukan</h4>
+<?php endif; ?>
+              </div>
+                 <table id="example2" class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>No</th>
@@ -85,10 +82,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                  
-                    <?php $no = 1;?>
-                    <?php $totalRows = count($angsuran); ?>
-                    <?php foreach ($angsuran as $key => $value): ?>
+                  <?php $no = 1;?>
+                    <?php foreach ($angsuran_detail as $value): ?>
                       <?php 
     // Hitung total angsuran yang telah dibayarkan untuk pinjaman ini
     $total_angsuran_dibayarkan = $this->db->query("SELECT SUM(jumlah_angsuran) AS total_angsuran FROM angsuran WHERE id_pinjaman = '{$value->id_pinjaman}'")->row()->total_angsuran;
@@ -101,14 +96,10 @@
 
     $total_pinjaman_bunga = $value->jumlah_pinjaman + ($value->jumlah_pinjaman * $value->bunga / 100);
 
-    // Tentukan nomor pinjaman saat ini dan nomor pinjaman berikutnya
-    $currentNoPinjaman = $value->no_pinjaman;
-    $nextNoPinjaman = ($key + 1 < count($angsuran)) ? $angsuran[$key + 1]->no_pinjaman : null;
-
     ?>
     
                       
-    <tr <?php if ($nextNoPinjaman !== null && $currentNoPinjaman !== $nextNoPinjaman): ?>class="last-row-before-next-loan"<?php endif; ?>>
+    <tr>
                         <td><?php cetak($no++) ?></td>
                          <td><?php cetak($value->nama)  ?></td>
                         <td><?php cetak($value->no_pinjaman)  ?></td>
@@ -126,41 +117,37 @@
                       </tr>
                     <?php endforeach; ?>
                   </tbody>
-                <!--  <tfoot>
-                    <tr>
-                      <th>No</th>
-                      <th>Nama Peminjam</th>
-                      <th>No Pinjaman</th>
-                      <th>No Angsuran</th>
-                      <th>Jumlah Pinjaman</th>
-                      <th>Tanggal Peminjaman</th>
-                      <th>Lama</th>
-                      <th>Total Bunga</th>
-                      <th>Jumlah Angsuran</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </tfoot> -->
                 </table>
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <?php $this->load->view("admin/_includes/footer.php") ?>
-  <?php $this->load->view("admin/_includes/control_sidebar.php") ?>
-  <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
-</div>
+                <div class="box-header">
+                  <?php foreach ($tot as $value): ?>
+                  <h3 class="label label-success"> Total Angsuran : <?php echo "Rp. " . (number_format($value->jumlah_angsuran,2,',','.')) ?></h3>
+                  <?php endforeach; ?>
+                  <button class="btn btn-default pull-right" type="button" onclick="window.history.back();">
+  <i class="fa fa-fw fa-arrow-left"></i>Kembali
+</button>
 
-<!-- Logout Delete Confirmation-->
+                </div>
+              </div>
+              
+              <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <?php $this->load->view("admin/_includes/footer.php") ?>
+    <?php $this->load->view("admin/_includes/control_sidebar.php") ?>
+  <!-- Add the sidebar's background. This div must be placed
+   immediately after the control sidebar -->
+   <div class="control-sidebar-bg"></div>
+ </div>
+
+ <!-- Logout Delete Confirmation-->
  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

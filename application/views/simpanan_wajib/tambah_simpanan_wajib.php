@@ -82,7 +82,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </button>
       </div>
       <div class="modal-body text-center">
-      <h4> Anda akan menambahkan simpanan wajib atas nama:</h4>
+      <h4> Anda akan menambahkan <strong>Simpanan Wajib </strong> atas nama:</h4>
       <h4 class="font-weight-bold mb-4"><strong><?php echo $anggota->nama; ?></strong></h4>
       <h4 class="text-muted">Sebesar <span id="modalNewJumlah"></span></h4>
       <h4 class="text-muted">Apakah Anda yakin?</h4>

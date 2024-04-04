@@ -51,8 +51,9 @@ class Angsuran extends MY_Controller
 
     if ($validation->run()) {
         $angsuran->save();
-        $this->session->set_flashdata('success', 'Tambah Pinjaman Sebesar Rp. ' . $angsuran->jumlah_angsuran . ' Berhasil Disimpan');
-        redirect('angsuran/index');
+		$jumlahFormatted = "Rp " . number_format($angsuran->jumlah_angsuran, 0, ',', '.');
+        $this->session->set_flashdata('success', 'Tambah Data Angsuran <strong>' . $anggota->nama . '</strong> Sebesar ' . $jumlahFormatted . ' Berhasil Disimpan');
+    	redirect('angsuran/index');
     }
     $data['angsuran'] = $this->Pinjaman_model->getById($id);
     $this->load->view("angsuran/tambah_angsuran", $data);
@@ -68,8 +69,8 @@ class Angsuran extends MY_Controller
 
 		if ($validation->run()) { //lakukan validasi form
 			$angsuran->update($id); // update data
-			$this->session->set_flashdata('success', 'Data Pinjaman Sebesar Rp. ' . $angsuran->getById($id)->jumlah_angsuran . ' Berhasil Diubah');
-			redirect($_SERVER ['HTTP_REFERER']);
+			$this->session->set_flashdata('success', 'Data Angsuran Sebesar Rp. ' . $angsuran->getById($id)->jumlah_angsuran . ' Berhasil Diubah');
+			redirect('angsuran');
 
 		}
 		// $data['anggota'] = $this->Anggota_model->getById($id);
@@ -93,8 +94,17 @@ class Angsuran extends MY_Controller
     $data["angsuran_detail"] = $this->Angsuran_model->detail_angsuran($id);
     $this->load->view('angsuran/detail_angsuran', $data);
 }
+
 	
+
+	public function angsuran_detail($id)
+	{
 	
+	// $data['anggota'] = $this->SimpananPokok_model->detail_simpanan_pokokall();
+	$data['tot'] = $this->Angsuran_model->total_angsuran($id);
+	$data['angsuran_detail'] = $this->Angsuran_model->getDetail($id);
+	$this->load->view("angsuran/angsuran_detail", $data);
+	}
 
 	public function delete($id)
 	{

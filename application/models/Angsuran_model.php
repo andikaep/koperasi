@@ -87,6 +87,15 @@ class Angsuran_model extends CI_Model
 		return $query->result();
 	}
 
+	public function total_angsuran($id){
+		$this->db->select_sum('s.jumlah_angsuran');
+		$this->db->from('angsuran as s');
+		$this->db->join('pinjaman as a', 's.id_pinjaman = a.id_pinjaman');
+		$this->db->where('a.id_pinjaman', $id);
+		$query = $this->db->get();
+		return $query->result();
+		}
+
 	public function detail_angsuran($id)
 	{
 		$this->db->select('a.*, p.*, SUM(ag.jumlah_angsuran) as total');
@@ -97,7 +106,26 @@ class Angsuran_model extends CI_Model
 		$query = $this->db->get();
 		return $query->result();
 	}
+	public function detail_simpanan_pokok($id){
+		$this->db->select('*');
+        $this->db->from('simpanan_pokok');
+        $this->db->join('anggota', 'simpanan_pokok.id_anggota = anggota.id_anggota');
+        $this->db->where('anggota.id_anggota', $id);
+        $query = $this->db->get();
+        return $query->result();
+	}
+	
 
+	public function getDetail($id)
+{
+    $this->db->select('*');
+    $this->db->from('angsuran');
+    $this->db->join('pinjaman', 'angsuran.id_pinjaman = pinjaman.id_pinjaman');
+    $this->db->join('anggota', 'pinjaman.id_anggota = anggota.id_anggota');
+    $this->db->where('pinjaman.id_pinjaman', $id);
+    $query = $this->db->get();
+    return $query->result();
+}
 	// public function detail_simpanan_pokokall(){
 	// 	$this->db->select('*');
 	//        $this->db->from('simpanan_wajib');

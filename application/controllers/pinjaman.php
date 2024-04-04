@@ -20,12 +20,7 @@ class Pinjaman extends MY_Controller
         $this->load->view("pinjaman/lihat_pinjaman", $data);
     }
 
-    public function detail($id){
-        // $data['anggota'] = $this->SimpananWajib_model->detail_simpanan_pokokall();
-        $data['simpanan_wajib'] = $this->SimpananWajib_model->detail_simpanan_wajib($id);
-        $data['tot'] = $this->SimpananWajib_model->total_simpanan_wajib($id);
-        $this->load->view("simpanan_wajib/detail_simpanan_wajib", $data);
-    }
+    
 
     public function list_anggota(){
     	$data['anggota'] = $this->Anggota_model->getAll();
@@ -34,14 +29,15 @@ class Pinjaman extends MY_Controller
 
     public function add($id)
     {   
-        $anggota = $this->Anggota_model;
+        $anggota = $this->Anggota_model->getById($id);
         $pinjaman = $this->Pinjaman_model;
         $validation = $this->form_validation;
         $validation->set_rules($pinjaman->rules());
 
         if ($validation->run()) {
             $pinjaman->save();
-            $this->session->set_flashdata('success', 'Tambah Pinjaman Sebesar Rp. '.$pinjaman->jumlah_pinjaman.' Berhasil Disimpan');
+            $jumlahFormatted = "Rp " . number_format($pinjaman->jumlah_pinjaman, 0, ',', '.');
+            $this->session->set_flashdata('success', 'Tambah Pinjaman <strong>' . $anggota->nama . '</strong> Sebesar ' . $jumlahFormatted . ' Berhasil Disimpan');
             redirect('pinjaman/index');
         }
         $data['anggota'] = $this->Anggota_model->getById($id);
@@ -49,21 +45,46 @@ class Pinjaman extends MY_Controller
     }
 
     public function edit($id){
-        $anggota = $this->Anggota_model; //object model
-    	$pinjaman = $this->Pinjaman_model; //object model
-        $validation = $this->form_validation; //object validasi
-        $validation->set_rules($pinjaman->rules()); //terapkan rules di Anggota_model.php
-
-        if ($validation->run()) { //lakukan validasi form
-            $pinjaman->update($id); // update data
-            $this->session->set_flashdata('success', 'Data Pinjaman Sebesar Rp. '.$pinjaman->getById($id)->jumlah_pinjaman.' Berhasil Diubah');
-            redirect($_SERVER ['HTTP_REFERER']);
-
+        $anggota = $this->Anggota_model->getById($id);
+        $pinjaman = $this->Pinjaman_model->getById($id);
+        if(!$pinjaman) {
+            show_404();
         }
-         // $data['anggota'] = $this->Anggota_model->getById($id);
-     
-        $data['pinjaman'] = $this->Pinjaman_model->getById($id);
+    
+        $anggota_id = $pinjaman->id_anggota;
+        $anggota = $this->Anggota_model->getById($anggota_id);
+        if(!$anggota) {
+            show_404();
+        }
+    
+        $validation = $this->form_validation;
+        $validation->set_rules($this->Pinjaman_model->rules());
+    
+    
+    
+        if ($validation->run()) {
+            $this->Pinjaman_model->update($id);
+            
+            // Ambil nilai simpanan pokok baru setelah perubahan
+            $new_jumlah = "Rp " . number_format(preg_replace("/[^0-9]/", "", $this->input->post('jumlah_pinjaman')), 0, ',', '.');
+            $old_jumlah = "Rp " . number_format($pinjaman->jumlah_pinjaman, 0, ',', '.');
+    
+            // Buat pesan dengan informasi yang diinginkan
+            $message = 'Data Pinjaman <strong>' . $anggota->nama . '</strong> sebesar <strong>' . $old_jumlah . '</strong> berhasil diubah menjadi <strong>' . $new_jumlah . '</strong>';
+            
+            $this->session->set_flashdata('success', $message);
+            redirect('pinjaman');
+        }
+    
+        $data['pinjaman'] = $pinjaman;
+        $data['anggota'] = $anggota;
         $this->load->view('pinjaman/edit_pinjaman', $data);
+    }
+    
+        public function hide($id){
+            $this->Anggota_model->update($id);
+            $this->session->set_flashdata('success', 'Data Pegawai Berhasil Dihapus');
+            redirect('anggota/index');
     }
 
     // public function hide($id){

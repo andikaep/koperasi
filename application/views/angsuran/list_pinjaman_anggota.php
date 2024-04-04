@@ -66,7 +66,7 @@
                         <td><?php cetak($value->jumlah_pinjaman)  ?></td>
                         <td>
                         <a class="btn btn-primary" href="<?php echo site_url('angsuran/add/'.$value->id_pinjaman) ?>"><i class="fa fa-fw fa-plus"></i>Angsuran</a>
-                        <a class="btn btn-primary" href="<?php echo site_url('') ?>"><i class="fa fa-fw fa-plus"></i>Detail Angsuran</a>
+                        <a class="btn btn-primary" href="<?php echo site_url('angsuran/angsuran_detail/'.$value->id_pinjaman) ?>"><i class="fa fa-fw fa-plus"></i>Detail Angsuran</a>
                         </td>
                       </tr>
                     <?php endforeach; ?>
