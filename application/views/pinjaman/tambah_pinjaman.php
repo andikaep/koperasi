@@ -98,7 +98,7 @@ if ($lastPinjaman !== null) {
     <p id="terbilang" class="form-control-static"></p>
                 
                 <div class="form-group">
-                  <label>Lama Peminjaman (Berapa Kali Angsuran)</label>
+                  <label>Tenor (Berapa Kali Angsuran)</label>
                   <input name="lama" class="form-control <?php echo form_error('lama') ? 'is-invalid':'' ?>" placeholder="Masukan Lama Peminjaman" type="text"/>
                   <div class="invalid-feedback">
                     <?php echo form_error('lama') ?>

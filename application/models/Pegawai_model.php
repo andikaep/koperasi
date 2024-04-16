@@ -12,6 +12,7 @@ class Pegawai_model extends CI_Model
 	public $nik;
 	public $nama;
 	public $alamat;
+	public $jabatan;
 	public $nohp;
 
 	public function rules()
@@ -27,6 +28,10 @@ class Pegawai_model extends CI_Model
 
 			['field' => 'alamat',
 			'label' => 'alamat',
+			'rules' => 'required'],
+
+			['field' => 'jabatan',
+			'label' => 'jabatan',
 			'rules' => 'required'],
 
 			['field' => 'nohp',
@@ -49,6 +54,7 @@ class Pegawai_model extends CI_Model
 		$this->nik = $post["nik"];
 		$this->nama = $post["nama"];
 		$this->alamat = $post["alamat"];
+		$this->alamat = $post["jabatan"];
 		$this->nohp = $post["nohp"];
 		$this->db->insert($this->_table, $this);
 	}
@@ -58,6 +64,7 @@ class Pegawai_model extends CI_Model
 			"nik" => $this->input->post('nik'),
 			"nama" => $this->input->post('nama'),
 			"alamat" => $this->input->post('alamat'),
+			"jabatan" => $this->input->post('jabatan'),
 			"nohp" => $this->input->post('nohp')
 		);
 

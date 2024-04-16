@@ -54,9 +54,7 @@
           <div class="col-xs-12">
             <div class="box">
               <div class="box-header">
-                <a href="<?php echo base_url('anggota/add') ?>" class="btn btn-tosca"><i class="fa fa-fw fa-plus"></i>Tambah</a>
-                <button class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Data</button>
-                <button class="btn btn-ijo"><i class="fa fa-fw fa-upload"></i>Import Data</button>
+              <a href="<?php echo base_url("simpanan_sukarela/export"); ?>" class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Excel</a>
               </div>
               <!-- /.box-header -->
               <div class="box-body table-responsive">
@@ -68,6 +66,7 @@
                       <th>Nama</th>
                       <th>Jenis Kelamin</th>
                       <th>Alamat</th>
+                      <th>Simpanan Sukarela</th>
                       <th>Aksi</th>
                     </tr>
                   </thead>
@@ -80,6 +79,14 @@
                         <td><?php cetak($value->nama ) ?></td>
                         <td><?php cetak($value->jenis_kelamin)  ?></td>
                         <td><?php cetak($value->alamat)  ?></td>
+                        <!-- Tambahkan kolom untuk menampilkan total simpanan sukarela -->
+            <td>
+    <?php foreach ($total_anggota as $item): ?>
+        <?php if ($item->id_anggota == $value->id_anggota): ?>
+            <?php echo "Rp. " . number_format($item->total_simpanan_sukarela, 0, ',', '.'); ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</td>
                         <td>
                           <a class="btn btn-primary" href="<?php echo site_url('simpanan_sukarela/add/'.$value->id_anggota) ?>"><i class="fa fa-fw fa-plus"></i>Simpanan Sukarela</a>
                           <a class="btn btn-success" href="<?php echo site_url('simpanan_sukarela/detail/'.$value->id_anggota) ?>"></i>Detail Simpanan Sukarela</a>
@@ -98,6 +105,7 @@
                     </tr>
                   </tfoot> -->
                 </table>
+                <h2 style="text-align: center; color: #336699; font-family: Arial, sans-serif; padding: 10px; background-color: #f0f0f0; border-radius: 5px;">Total Simpanan Sukarela Seluruh Anggota: <?php echo "Rp " . number_format($total, 0, ',', '.'); ?></h2>
               </div>
               <!-- /.box-body -->
             </div>

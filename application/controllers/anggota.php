@@ -139,6 +139,56 @@ class Anggota extends MY_Controller
 		redirect("anggota"); // Redirect ke halaman awal (ke controller siswa fungsi index)
 	}
 
+	public function export_pdf() {
+		// Load library TCPDF
+		$this->load->library('tcpdf/tcpdf');
+		
+		// Create new PDF document
+		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+		
+		// Set document information
+		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetTitle('Data Anggota');
+		$pdf->SetHeaderData('', '', 'Koperasi Desa Beji', '');
+		
+		// Add a page
+		$pdf->AddPage();
+		
+		// Set some content to display
+		$html = '<h1 style="text-align:center">Data Anggota Koperasi</h1>';
+		$html .= '<table border="1">';
+		$html .= '<tr>';
+		$html .= '<th style="text-align:center">No</th>';
+		$html .= '<th style="text-align:center">NIA</th>';
+		$html .= '<th style="text-align:center">Nama</th>';
+		$html .= '<th style="text-align:center">Jenis Kelamin</th>';
+		$html .= '<th style="text-align:center">Alamat</th>';
+		$html .= '</tr>';
+		$no = 1;
+		
+		// Get data anggota
+		$anggota = $this->Anggota_model->getAll();
+		
+		foreach ($anggota as $value) {
+			$html .= '<tr>';
+			$html .= '<td style="text-align:center">' . $no++ . '</td>';
+			$html .= '<td style="text-align:center">' . $value->nia . '</td>';
+			$html .= '<td style="text-align:center">' . $value->nama . '</td>';
+			$html .= '<td style="text-align:center">' . $value->jenis_kelamin . '</td>';
+			$html .= '<td style="text-align:center">' . $value->alamat . '</td>';
+			$html .= '</tr>';
+		}
+		$html .= '</table>';
+
+		$pdf->SetY(25);
+		
+		// Write HTML content to PDF
+		$pdf->writeHTML($html, true, false, true, false, '');
+		
+		// Close and output PDF document
+		$pdf->Output('data_anggota.pdf', 'I');
+	}
+
 	public function export(){
 		// Load plugin PHPExcel nya
 		include APPPATH.'third_party/PHPExcel/PHPExcel.php';

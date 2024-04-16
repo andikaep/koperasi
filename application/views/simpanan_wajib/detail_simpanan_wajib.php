@@ -91,7 +91,7 @@
                 </table>
                 <div class="box-header">
                   <?php foreach ($tot as $nilai): ?>
-                  <h3 class="label label-success"> Total Simpanan Wajib Anda : <?php echo "Rp. " . (number_format($nilai->jumlah,2,',','.')) ?></h3>
+                    <h1 class="label label-success" style="font-size: 18px;"> Total Simpanan Wajib : <?php echo "Rp. " . (number_format($nilai->jumlah,0,',','.')) ?></h1>
                   <?php endforeach; ?>
                   
                 </div>

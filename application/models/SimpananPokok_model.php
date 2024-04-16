@@ -38,6 +38,12 @@ class SimpananPokok_model extends CI_Model
         return $query->result();
 	}
 
+	public function getAllByAnggotaId($id_anggota) {
+        // Lakukan query ke database untuk mendapatkan semua data simpanan pokok berdasarkan ID anggota
+        $query = $this->db->get_where('simpanan_pokok', array('id_anggota' => $id_anggota));
+        return $query->result(); // Mengembalikan hasil query dalam bentuk array dari objek
+    }
+	
 	public function total_simpanan_pokok($id){
 		$this->db->select_sum('s.jumlah');
         $this->db->from('simpanan_pokok as s');
@@ -47,6 +53,24 @@ class SimpananPokok_model extends CI_Model
         return $query->result();
 	}
 
+	public function total_simpanan_pokok_all(){
+		$this->db->select_sum('s.jumlah');
+		$this->db->from('simpanan_pokok as s');
+		$query = $this->db->get();
+		$result = $query->row_array(); // Mengambil hasil dalam bentuk array
+		return $result['jumlah']; // Mengembalikan nilai jumlah
+	}
+	
+	public function total_simpanan_pokok_per_anggota()
+{
+    $this->db->select('id_anggota, SUM(jumlah) as total_simpanan_pokok');
+    $this->db->from('simpanan_pokok');
+    $this->db->group_by('id_anggota');
+    $query = $this->db->get();
+    return $query->result(); // Mengembalikan hasil dalam bentuk objek hasil query
+}
+
+	
 		// public function detail_simpanan_pokokall(){
 		// 	$this->db->select('*');
 	 //        $this->db->from('simpanan_pokok');

@@ -66,7 +66,8 @@ if (isset($_SESSION['success_message'])) {
               <div class="box">
                 <div class="box-header">
                   <a href="<?php echo base_url('pegawai/add') ?>" class="btn btn-tosca"><i class="fa fa-fw fa-plus"></i>Tambah</a>
-                  <a href="<?php echo base_url("pegawai/export"); ?>" class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Data</a>
+                  <a href="<?php echo base_url("pegawai/export"); ?>" class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Excel</a>
+                  <a href="<?php echo base_url("pegawai/export_pdf"); ?>" class="btn btn-ijo"><i class="fa fa-fw fa-download"></i>Export PDF</a>
                   <a class="btn btn-ijo" href="<?php echo base_url("pegawai/form"); ?>"><i class="fa fa-fw fa-upload"></i>Import Data</a>
                 </div>
                 <!-- /.box-header -->
@@ -78,6 +79,7 @@ if (isset($_SESSION['success_message'])) {
                         <th>NIK</th>
                         <th>Nama</th>
                         <th>Alamat</th>
+                        <th>Jabatan</th>
                         <th>No HP</th>
                         <th>Aksi</th>
                       </tr>
@@ -90,6 +92,7 @@ if (isset($_SESSION['success_message'])) {
                           <td><?php echo $value->nik ?></td>
                           <td><?php echo $value->nama ?></td>
                           <td><?php echo $value->alamat ?></td>
+                          <td><?php echo $value->jabatan ?></td>
                           <td>
   <?php 
   // Tambahkan angka 0 di depan nomor handphone jika diperlukan

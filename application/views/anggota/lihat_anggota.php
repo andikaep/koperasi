@@ -55,7 +55,8 @@
             <div class="box">
               <div class="box-header">
                 <a href="<?php echo base_url('anggota/add') ?>" class="btn btn-tosca"><i class="fa fa-fw fa-plus"></i>Tambah</a>
-                <a href="<?php echo base_url("anggota/export"); ?>"  class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Data</a>
+                <a href="<?php echo base_url("anggota/export"); ?>"  class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Excel</a>
+                <a href="<?php echo base_url("anggota/export_pdf"); ?>" class="btn btn-ijo"><i class="fa fa-fw fa-download"></i>Export PDF</a>
                 <a class="btn btn-ijo" href="<?php echo base_url("anggota/form"); ?>"><i class="fa fa-fw fa-upload"></i>Import Data</a>
               </div>
               <!-- /.box-header -->
@@ -83,8 +84,8 @@
                         <td>
                           <a class="btn btn-ref" href="<?php echo site_url('anggota/edit/'.$value->id_anggota) ?>"><i class="fa fa-fw fa-edit"></i>Edit</a>
                           <a href="#!" onclick="deleteConfirm('<?php echo site_url('anggota/delete/'.$value->id_anggota) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i>Hapus</a>
-                          <a class="btn btn-primary" href="<?php echo site_url('Anak_controller/form_add/'.$value->id_anggota) ?>"><i class="fa fa-fw fa-plus"></i>Anak</a>
-                          <a class="btn btn-primary" href="<?php echo site_url('Pasangan_controller/form_add/'.$value->id_anggota) ?>"><i class="fa fa-fw fa-plus"></i>Pasangan</a>
+                         <!-- <a class="btn btn-primary" href="<?php echo site_url('Anak_controller/form_add/'.$value->id_anggota) ?>"><i class="fa fa-fw fa-plus"></i>Anak</a>
+                          <a class="btn btn-primary" href="<?php echo site_url('Pasangan_controller/form_add/'.$value->id_anggota) ?>"><i class="fa fa-fw fa-plus"></i>Pasangan</a> -->
                           <a class="btn btn-warning" href="<?php echo site_url('anggota/detail/'.$value->id_anggota) ?>"><i class="fa fa-fw fa-users"></i>Detail</a>
                         </td>
                       </tr>

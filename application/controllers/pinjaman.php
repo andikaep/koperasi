@@ -20,6 +20,11 @@ class Pinjaman extends MY_Controller
         $this->load->view("pinjaman/lihat_pinjaman", $data);
     }
 
+    public function simulasi()
+    {
+        $data["pinjaman"] = $this->Pinjaman_model->getListPinjaman();
+        $this->load->view("pinjaman/simulasi_pinjaman", $data);
+    }
     
 
     public function list_anggota(){

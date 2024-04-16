@@ -72,6 +72,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   </div>
                 </div>
                 <div class="form-group">
+                  <label>Jabatan</label>
+                  <input name="jabatan" class="form-control <?php echo form_error('jabatan') ? 'is-invalid':'' ?>" placeholder="Masukan Jabatan" value="<?php echo $pegawai->jabatan?>" type="text"/>
+                  <div class="invalid-feedback">
+                    <?php echo form_error('jabatan')?>
+                  </div>
+                </div>
+                <div class="form-group">
   <label for="nohp">Nomor Handphone</label>
   <?php 
   // Tambahkan angka 0 di depan nomor handphone jika diperlukan

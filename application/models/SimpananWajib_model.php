@@ -52,6 +52,23 @@ class SimpananWajib_model extends CI_Model
         return $query->result();
 	}
 
+	public function total_simpanan_wajib_all(){
+		$this->db->select_sum('s.jumlah');
+		$this->db->from('simpanan_wajib as s');
+		$query = $this->db->get();
+		$result = $query->row_array(); // Mengambil hasil dalam bentuk array
+		return $result['jumlah']; // Mengembalikan nilai jumlah
+	}
+	
+	public function total_simpanan_wajib_per_anggota()
+	{
+    $this->db->select('id_anggota, SUM(jumlah) as total_simpanan_wajib');
+    $this->db->from('simpanan_wajib');
+    $this->db->group_by('id_anggota');
+    $query = $this->db->get();
+    return $query->result();
+	}
+
 	// public function detail_simpanan_pokokall(){
 	// 	$this->db->select('*');
  //        $this->db->from('simpanan_wajib');

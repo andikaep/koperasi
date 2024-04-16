@@ -84,6 +84,59 @@ class Pegawai extends MY_Controller
 		$this->load->view('pegawai/validasi_import', $data);
 	}
 
+	public function export_pdf() {
+		// Load library TCPDF
+		$this->load->library('tcpdf/tcpdf');
+		
+		// Create new PDF document
+		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+		
+		// Set document information
+		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetTitle('Data Pegawai');
+		$pdf->SetHeaderData('', '', 'Koperasi Desa Beji', '');
+		
+		// Add a page
+		$pdf->AddPage();
+		
+		// Set some content to display
+		$html = '<h1 style="text-align:center">Data Pegawai</h1>';
+		$html .= '<table border="1">';
+		$html .= '<tr>';
+		$html .= '<th style="text-align:center">No</th>';
+		$html .= '<th style="text-align:center">NIK</th>';
+		$html .= '<th style="text-align:center">Nama</th>';
+		$html .= '<th style="text-align:center">Alamat</th>';
+		$html .= '<th style="text-align:center">Jabatan</th>';
+		$html .= '<th style="text-align:center">No HP</th>';
+		$html .= '</tr>';
+		$no = 1;
+		
+		// Get data pegawai
+		$pegawai = $this->Pegawai_model->getAll();
+		
+		foreach ($pegawai as $value) {
+			$html .= '<tr>';
+			$html .= '<td style="text-align:center">' . $no++ . '</td>';
+			$html .= '<td style="text-align:center">' . $value->nik . '</td>';
+			$html .= '<td style="text-align:center">' . $value->nama . '</td>';
+			$html .= '<td style="text-align:center">' . $value->alamat . '</td>';
+			$html .= '<td style="text-align:center">' . $value->jabatan . '</td>';
+			$html .= '<td style="text-align:center">' . '0' . $value->nohp . '</td>'; // Tambahkan angka 0 di depan nomor hp
+			$html .= '</tr>';
+		}
+		$html .= '</table>';
+
+		$pdf->SetY(25);
+		
+		// Write HTML content to PDF
+		$pdf->writeHTML($html, true, false, true, false, '');
+		
+		// Close and output PDF document
+		$pdf->Output('data_pegawai.pdf', 'I');
+	}
+	
+	
 	public function import(){
 		// Load plugin PHPExcel nya
 		include APPPATH.'third_party/PHPExcel/PHPExcel.php';
@@ -158,7 +211,7 @@ class Pegawai extends MY_Controller
 				'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
 			)
 		);
-		$excel->setActiveSheetIndex(0)->setCellValue('A1', "DATA PEGAWAI KOPERASI"); // Set kolom A1 dengan tulisan "DATA SISWA"
+		$excel->setActiveSheetIndex(0)->setCellValue('A1', "DATA PEGAWAI KOPERASI DESA BEJI"); // Set kolom A1 dengan tulisan "DATA SISWA"
 		$excel->getActiveSheet()->mergeCells('A1:E1'); // Set Merge Cell pada kolom A1 sampai E1
 		$excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
 		$excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
@@ -168,13 +221,15 @@ class Pegawai extends MY_Controller
 		$excel->setActiveSheetIndex(0)->setCellValue('B3', "NIK"); // Set kolom B3 dengan tulisan "NIS"
 		$excel->setActiveSheetIndex(0)->setCellValue('C3', "NAMA"); // Set kolom C3 dengan tulisan "NAMA"
 		$excel->setActiveSheetIndex(0)->setCellValue('D3', "ALAMAT"); // Set kolom D3 dengan tulisan "JENIS KELAMIN"
-		$excel->setActiveSheetIndex(0)->setCellValue('E3', "NO HP"); // Set kolom E3 dengan tulisan "ALAMAT"
+		$excel->setActiveSheetIndex(0)->setCellValue('E3', "JABATAN");
+		$excel->setActiveSheetIndex(0)->setCellValue('F3', "NO HP"); // Set kolom E3 dengan tulisan "ALAMAT"
 		// Apply style header yang telah kita buat tadi ke masing-masing kolom header
 		$excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
 		$excel->getActiveSheet()->getStyle('B3')->applyFromArray($style_col);
 		$excel->getActiveSheet()->getStyle('C3')->applyFromArray($style_col);
 		$excel->getActiveSheet()->getStyle('D3')->applyFromArray($style_col);
 		$excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
+		$excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
 		// Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
 		$pegawai = $this->Pegawai_model->getAll();
 		$no = 1; // Untuk penomoran tabel, di awal set dengan 1
@@ -184,12 +239,13 @@ class Pegawai extends MY_Controller
 			$excel->setActiveSheetIndex(0)->setCellValueExplicit('B'.$numrow, $data->nik, PHPExcel_Cell_DataType::TYPE_STRING); // Set kolom B sebagai teks eksplisit
 			$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data->nama);
 			$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data->alamat);
+			$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data->jabatan);
 			 // Menambahkan angka 0 di depan nomor handphone
 			 $no_hp = $data->nohp;
 			 if (substr($no_hp, 0, 1) != '0') { // Jika angka pertama bukan 0
 				 $no_hp = '0' . $no_hp; // Tambahkan angka 0 di depan
 			 }
-			 $excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $no_hp);
+			 $excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $no_hp);
 
 			// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
 			$excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
@@ -197,6 +253,7 @@ class Pegawai extends MY_Controller
 			$excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
 			$excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
 			$excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
+			$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
 
 			$no++; // Tambah 1 setiap kali looping
 			$numrow++; // Tambah 1 setiap kali looping
@@ -207,6 +264,7 @@ class Pegawai extends MY_Controller
 		$excel->getActiveSheet()->getColumnDimension('C')->setWidth(25); // Set width kolom C
 		$excel->getActiveSheet()->getColumnDimension('D')->setWidth(20); // Set width kolom D
 		$excel->getActiveSheet()->getColumnDimension('E')->setWidth(30); // Set width kolom E
+		$excel->getActiveSheet()->getColumnDimension('F')->setWidth(40); // Set width kolom E
 
 		// Set height semua kolom menjadi auto (mengikuti height isi dari kolommnya, jadi otomatis)
 		$excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(-1);

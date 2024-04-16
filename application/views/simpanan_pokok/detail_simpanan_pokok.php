@@ -58,6 +58,9 @@
               <div class="box-header">
                 <h3 class="label label-primary" style="font-size: 12px, margin-right: -20px !important;">--- Detail Simpanan Pokok ---</h3>
               </div>
+              <div class="box-header">
+                 <a href="<?php echo base_url("simpanan_pokok/export_detail"); ?>" class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Excel</a>
+              </div>
                  <table id="example2" class="table table-bordered table-hover">
                   <thead>
                     <tr>
@@ -90,7 +93,7 @@
                 </table>
                 <div class="box-header">
                   <?php foreach ($tot as $nilai): ?>
-                  <h3 class="label label-success"> Total Simpanan Pokok Anda : <?php echo "Rp. " . (number_format($nilai->jumlah,2,',','.')) ?></h3>
+                    <h1 class="label label-success" style="font-size: 18px;"> Total Simpanan Pokok : <?php echo "Rp. " . (number_format($nilai->jumlah,0,',','.')) ?></h1>
                   <?php endforeach; ?>
                   <button class="btn btn-default pull-right" type="button" onclick="window.history.back();">
   <i class="fa fa-fw fa-arrow-left"></i>Kembali

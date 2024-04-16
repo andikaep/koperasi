@@ -99,6 +99,23 @@ class SimpananSukarela_model extends CI_Model
 	    $this->db->update('simpanan_sukarela', $data); // Untuk mengeksekusi perintah update data
 	}
 
+	public function total_simpanan_sukarela_all(){
+		$this->db->select_sum('s.jumlah');
+		$this->db->from('simpanan_sukarela as s');
+		$query = $this->db->get();
+		$result = $query->row_array(); // Mengambil hasil dalam bentuk array
+		return $result['jumlah']; // Mengembalikan nilai jumlah
+	}
+	
+	public function total_simpanan_sukarela_per_anggota()
+	{
+    $this->db->select('id_anggota, SUM(jumlah) as total_simpanan_sukarela');
+    $this->db->from('simpanan_sukarela');
+    $this->db->group_by('id_anggota');
+    $query = $this->db->get();
+    return $query->result();
+	}
+
 	// public function hide($id){
 	// 	$this->db->where('id_anggota', $id);
 	// 	$this->_table->update('set_aktif == False');

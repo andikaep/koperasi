@@ -21,10 +21,10 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
 
-		<h1>
-			Selamat Datang
-			<small><?php echo $this->session->userdata('nama'); ?></small>
-		</h1>
+		<h2>
+			Selamat Datang, 	
+			<?php echo $this->session->userdata('nama'); ?>
+      </h2>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">Dashboard</li>
@@ -35,65 +35,143 @@
     <section class="content">
       <!-- Small boxes (Stat box) -->
       <div class="row">
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-aqua">
-            <div class="inner">
-              <h4>Pegawai</h4>
+      <div class="col-lg-3 col-xs-6">
+  <!-- small box -->
+  <a href="pegawai" style="color: inherit; text-decoration: none;">
+    <div class="small-box bg-aqua">
+      <div class="inner">
+        <h4>Pegawai</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-blind"></i>
+      </div>
+      <div class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div>
 
-            <p>Koperasi Desa Beji</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-            <a href="pegawai" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col --><br><br><br><br>
+        <!-- ./col -->
         <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-green">
-            <div class="inner">
-              <h4>Anggota<sup style="font-size: 20px">%</sup></h4>
-
-              <p>Koperasi Desa Beji</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-stats-bars"></i>
-            </div>
-            <a href="anggota" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col --><br><br><br><br>
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h4>Data Pinjaman</h4>
-
-              <p>Koperasi Desa Beji</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-person-add"></i>
-            </div>
-            <a href="Pinjaman_controller" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col --><br><br><br><br>
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-red">
-            <div class="inner">
-              <h4>Data Angsuran</h4>
-
-              <p>Koperasi Desa Beji</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="Angsuran_controller" class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
+  <!-- small box -->
+  <a href="anggota" style="color: inherit; text-decoration: none;">
+    <div class="small-box bg-red">
+      <div class="inner">
+        <h4>Anggota</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+      <i class="fa fa-child"></i>
+      </div>
+      <div class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div>
+    <div class="col-lg-3 col-xs-6">
+  <!-- small box -->
+  <a href="pinjaman" style="color: inherit; text-decoration: none;">
+    <div class="small-box bg-green">
+      <div class="inner">
+        <h4>Data Pinjaman</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+      <i class="fa fa-users"></i>
+      </div>
+      <div class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div>
+<div class="col-lg-3 col-xs-6">
+  <!-- small box -->
+  <a href="angsuran" style="color: inherit; text-decoration: none;">
+    <div class="small-box bg-yellow">
+      <div class="inner">
+        <h4>Data Angsuran</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+      <i class="ion ion-pie-graph"></i>
+      </div>
+      <div class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div>
+<div class="col-lg-3 col-xs-6">
+  <!-- small box -->
+  <a href="simpanan_pokok" style="color: inherit; text-decoration: none;">
+    <div class="small-box bg-orange">
+      <div class="inner">
+        <h4>Data Simpanan Pokok</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+      <i class="fa fa-database"></i>
+      </div>
+      <div class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div>
+<div class="col-lg-3 col-xs-6">
+  <!-- small box -->
+  <a href="simpanan_wajib" style="color: inherit; text-decoration: none;">
+    <div class="small-box bg-teal">
+      <div class="inner">
+        <h4>Data Simpanan Wajib</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+      <i class="ion ion-pie-graph"></i>
+      </div>
+      <div class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div>
+<div class="col-lg-3 col-xs-6">
+  <!-- small box -->
+  <a href="simpanan_sukarela" style="color: inherit; text-decoration: none;">
+    <div class="small-box bg-maroon">
+      <div class="inner">
+        <h4>Data Simpanan Sukarela</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+      <i class="fa fa-cube"></i>
+      </div>
+      <div class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div>
+<div class="col-lg-3 col-xs-6">
+  <!-- small box -->
+  <a href="angsuran/listPinjamanAnggota" style="color: inherit; text-decoration: none;">
+    <div class="small-box bg-olive">
+      <div class="inner">
+        <h4>Tambah Angsuran</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+      <i class="fa fa-money"></i>
+      </div>
+      <div class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div>
+<div class="col-lg-3 col-xs-6">
+  <!-- small box -->
+  <a href="pinjaman/simulasi" style="color: inherit; text-decoration: none;">
+    <div class="small-box bg-green">
+      <div class="inner">
+        <h4>Simulasi</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+      <i class="fa fa-calculator"></i>
+      </div>
+      <div class="small-box-footer">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div>
         <!-- ./col -->
       </div>
       <!-- /.row -->
