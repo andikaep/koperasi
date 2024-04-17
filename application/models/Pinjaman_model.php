@@ -48,6 +48,14 @@ class Pinjaman_model extends CI_Model
 		return $this->db->get($this->_table)->result();
 	}
 
+	public function countAll() {
+		// Hitung jumlah seluruh pinjaman pada kolom jumlah_pinjaman dalam tabel pinjaman
+		$this->db->select_sum('jumlah_pinjaman');
+		$query = $this->db->get('pinjaman');
+		$result = $query->row_array();
+		return $result['jumlah_pinjaman'];
+	}	
+
 	public function getPinjamanByIdAnggota($id_anggota) {
         $this->db->where('id_anggota', $id_anggota);
         return $this->db->get('pinjaman')->result();

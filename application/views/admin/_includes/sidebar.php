@@ -62,6 +62,8 @@
           </ul>
         </li>
         </li>
+        <li><a href="<?php echo base_url('pinjaman/simulasi') ?>"><i class="fa fa-fw fa-calculator"></i> <span>Simulasi Pinjaman</span></a>
+        </li>
         <li><a href="<?php echo base_url('calculator') ?>"><i class="fa fa-fw fa-calculator"></i> <span>Kalkulator</span></a>
         </li>
       </ul>

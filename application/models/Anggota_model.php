@@ -39,6 +39,11 @@ class Anggota_model extends CI_Model
 		return $this->db->get($this->_table)->result();
 	}
 
+	public function countAll() {
+        // Hitung jumlah pegawai dalam tabel pegawai
+        return $this->db->count_all('anggota');
+    }
+
 	public function getAnggotaById($id_anggota) {
         $this->db->where('id_anggota', $id_anggota);
         return $this->db->get('anggota')->row();

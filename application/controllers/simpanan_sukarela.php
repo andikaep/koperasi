@@ -150,6 +150,7 @@ class Simpanan_sukarela extends MY_Controller
 		$excel->setActiveSheetIndex(0)->setCellValue('C3', "NAMA"); // Set kolom C3 dengan tulisan "NAMA"
 		$excel->setActiveSheetIndex(0)->setCellValue('D3', "JENIS KELAMIN"); // Set kolom D3 dengan tulisan "JENIS KELAMIN"
 		$excel->setActiveSheetIndex(0)->setCellValue('E3', "ALAMAT");
+        $excel->setActiveSheetIndex(0)->setCellValue('F3', "SIMPANAN SUKARELA");
 	
 		// Apply style header yang telah kita buat tadi ke masing-masing kolom header
 		$excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
@@ -157,6 +158,7 @@ class Simpanan_sukarela extends MY_Controller
 		$excel->getActiveSheet()->getStyle('C3')->applyFromArray($style_col);
 		$excel->getActiveSheet()->getStyle('D3')->applyFromArray($style_col);
 		$excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
+        $excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
 
 		// Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
 		// Panggil function view yang ada di Anggota_model untuk menampilkan semua data anggotanya
@@ -170,12 +172,29 @@ class Simpanan_sukarela extends MY_Controller
     $excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data->jenis_kelamin);
     $excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data->alamat);
 
+    $total_simpanan_sukarela_anggota_result = $this->SimpananSukarela_model->total_simpanan_sukarela_per_anggota();
+
+// Mencari total simpanan pokok per anggota yang sesuai dengan id anggota saat ini
+$total_simpanan_sukarela_anggota = 0;
+foreach ($total_simpanan_sukarela_anggota_result as $total) {
+    if ($total->id_anggota == $data->id_anggota) {
+        $total_simpanan_sukarela_anggota = $total->total_simpanan_sukarela;
+        break;
+    }
+}
+     // Format jumlah simpanan pokok per anggota menjadi format Rupiah
+     $total_simpanan_sukarela_anggota_rp = 'Rp ' . number_format($total_simpanan_sukarela_anggota, 0, ',', '.');
+
+     // Menambahkan jumlah simpanan pokok per anggota ke dalam kolom F
+     $excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $total_simpanan_sukarela_anggota_rp);
+
     // Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
     $excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
     $excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
     $excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
     $excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
     $excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
+    $excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
 
     $no++; // Tambah 1 setiap kali looping
     $numrow++; // Tambah 1 setiap kali looping
@@ -192,8 +211,8 @@ $excel->getActiveSheet()->mergeCells('A'.$numrow.':D'.$numrow); // Merge cells u
 $excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, 'Jumlah Simpanan Sukarela Seluruh Anggota'); // Set nilai pada kolom A baris ke-$numrow
 
 // Set nilai pada kolom E baris ke-$numrow dengan format Rupiah dan alignment horizontal ke kanan
-$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $total_simpanan_sukarela_rp); // Set nilai pada kolom E baris ke-$numrow dengan format Rupiah
-$excel->getActiveSheet()->getStyle('E'.$numrow)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT); // Set alignment horizontal ke kanan
+$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $total_simpanan_sukarela_rp); // Set nilai pada kolom E baris ke-$numrow dengan format Rupiah
+$excel->getActiveSheet()->getStyle('F'.$numrow)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT); // Set alignment horizontal ke kanan
 
 // Apply style yang telah kita buat ke baris jumlah simpanan sukarela
 $excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
@@ -201,6 +220,7 @@ $excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
 $excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
 $excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
 $excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
+$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
 
 
 // Set width kolom
@@ -209,6 +229,8 @@ $excel->getActiveSheet()->getColumnDimension('B')->setWidth(15); // Set width ko
 $excel->getActiveSheet()->getColumnDimension('C')->setWidth(25); // Set width kolom C
 $excel->getActiveSheet()->getColumnDimension('D')->setWidth(20); // Set width kolom D
 $excel->getActiveSheet()->getColumnDimension('E')->setWidth(30); // Set width kolom E
+$excel->getActiveSheet()->getColumnDimension('F')->setWidth(30); // Set width kolom E
+
 
 // Set height semua kolom menjadi auto (mengikuti height isi dari kolommnya, jadi otomatis)
 $excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(-1);

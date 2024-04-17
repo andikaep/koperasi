@@ -110,8 +110,8 @@ class Simpanan_pokok extends MY_Controller
 		// Panggil class PHPExcel nya
 		$excel = new PHPExcel();
 		// Settingan awal fil excel
-		$excel->getProperties()->setCreator('Ino Galwargan')
-			->setLastModifiedBy('Ino Galwargan')
+		$excel->getProperties()->setCreator('Andika')
+			->setLastModifiedBy('Andika')
 			->setTitle("Data Simpanan Pokok")
 			->setSubject("Simpanan Pokok")
 			->setDescription("Laporan Simpanan Pokok")
@@ -176,10 +176,19 @@ class Simpanan_pokok extends MY_Controller
     $excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data->alamat);
 
      // Menghitung jumlah simpanan pokok per anggota
-     $total_simpanan_pokok_anggota = $this->SimpananPokok_model->total_simpanan_pokok_per_anggota($data->id_anggota);
+     // Mengambil total simpanan pokok per anggota dari model
+$total_simpanan_pokok_anggota_result = $this->SimpananPokok_model->total_simpanan_pokok_per_anggota();
 
+// Mencari total simpanan pokok per anggota yang sesuai dengan id anggota saat ini
+$total_simpanan_pokok_anggota = 0;
+foreach ($total_simpanan_pokok_anggota_result as $total) {
+    if ($total->id_anggota == $data->id_anggota) {
+        $total_simpanan_pokok_anggota = $total->total_simpanan_pokok;
+        break;
+    }
+}
      // Format jumlah simpanan pokok per anggota menjadi format Rupiah
-     $total_simpanan_pokok_anggota_rp = 'Rp ' . number_format((float)$total_simpanan_pokok_anggota, 0, ',', '.');
+     $total_simpanan_pokok_anggota_rp = 'Rp ' . number_format($total_simpanan_pokok_anggota, 0, ',', '.');
 
      // Menambahkan jumlah simpanan pokok per anggota ke dalam kolom F
      $excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $total_simpanan_pokok_anggota_rp);
@@ -292,8 +301,8 @@ public function export_detail(){
         $excel->setActiveSheetIndex(0)->setCellValue('B3', "NIA"); // Set kolom B3 dengan tulisan "NIS"
         $excel->setActiveSheetIndex(0)->setCellValue('C3', "NAMA"); // Set kolom C3 dengan tulisan "NAMA"
         $excel->setActiveSheetIndex(0)->setCellValue('D3', "JENIS KELAMIN"); // Set kolom D3 dengan tulisan "JENIS KELAMIN"
-        $excel->setActiveSheetIndex(0)->setCellValue('E3', "JUMLAH");
-        $excel->setActiveSheetIndex(0)->setCellValue('F3', "TANGGAL");
+        $excel->setActiveSheetIndex(0)->setCellValue('E3', "TANGGAL");
+        $excel->setActiveSheetIndex(0)->setCellValue('F3', "JUMLAH");
     
         // Apply style header yang telah kita buat tadi ke masing-masing kolom header
         $excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
@@ -332,12 +341,13 @@ public function export_detail(){
             $excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data->nama);
             $excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data->jenis_kelamin);
         
+            $tanggal_dibayar = isset($data->tanggal_dibayar) ? $data->tanggal_dibayar : '';
             // Pastikan properti jumlah dan tanggal_dibayar ada sebelum mengaksesnya
             $jumlah = isset($data->jumlah) ? $data->jumlah : '';
-            $tanggal_dibayar = isset($data->tanggal_dibayar) ? $data->tanggal_dibayar : '';
-        
-            $excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $jumlah);
-            $excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $tanggal_dibayar);
+            
+            $excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $tanggal_dibayar);
+            $excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $jumlah);
+            
         
             // Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
             $excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
@@ -354,17 +364,17 @@ public function export_detail(){
     
         // Hitung jumlah simpanan pokok
         $total_simpanan_pokok = $this->SimpananPokok_model->total_simpanan_pokok_per_anggota();
-    
+        
         // Format jumlah simpanan pokok menjadi format Rupiah
-        $total_simpanan_pokok_rp = 'Rp ' . number_format((float)$total_simpanan_pokok, 0, ',', '.');
+        $total_simpanan_pokok_rp = 'Rp ' . number_format($total_simpanan_pokok, 0, ',', '.');        
     
         // Menambahkan jumlah simpanan pokok di bawah data anggota terakhir
         $excel->getActiveSheet()->mergeCells('A'.$numrow.':D'.$numrow); // Merge cells untuk kolom A hingga D pada baris ke-$numrow
         $excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, 'Jumlah Simpanan Pokok Seluruh Anggota'); // Set nilai pada kolom A baris ke-$numrow
     
         // Set nilai pada kolom E baris ke-$numrow dengan format Rupiah dan alignment horizontal ke kanan
-        $excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $total_simpanan_pokok_rp); // Set nilai pada kolom E baris ke-$numrow dengan format Rupiah
-        $excel->getActiveSheet()->getStyle('E'.$numrow)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT); // Set alignment horizontal ke kanan
+        $excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $total_simpanan_pokok_rp); // Set nilai pada kolom E baris ke-$numrow dengan format Rupiah
+        $excel->getActiveSheet()->getStyle('F'.$numrow)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT); // Set alignment horizontal ke kanan
     
         // Apply style yang telah kita buat ke baris jumlah simpanan pokok
         $excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
@@ -396,6 +406,75 @@ public function export_detail(){
         header('Cache-Control: max-age=0');
         $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
+    }
+
+    public function export_pdf() {
+        // Load library TCPDF
+        $this->load->library('tcpdf/tcpdf');
+        
+        // Create new PDF document
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        
+        // Set document information
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('Data Anggota');
+        $pdf->SetHeaderData('', '', 'Koperasi Desa Beji', '');
+        
+        // Add a page
+        $pdf->AddPage();
+        
+        // Set some content to display
+        $html = '<h1 style="text-align:center">Data Anggota Koperasi</h1>';
+        $html .= '<table border="1">';
+        $html .= '<tr>';
+        $html .= '<th style="text-align:center">No</th>';
+        $html .= '<th style="text-align:center">NIA</th>';
+        $html .= '<th style="text-align:center">Nama</th>';
+        $html .= '<th style="text-align:center">Jenis Kelamin</th>';
+        $html .= '<th style="text-align:center">Alamat</th>';
+        $html .= '<th style="text-align:center">Simpanan Pokok</th>'; // Tambahkan kolom untuk simpanan pokok
+        $html .= '</tr>';
+        $no = 1;
+        
+        // Get data anggota
+        $anggota = $this->Anggota_model->getAll();
+        
+        foreach ($anggota as $value) {
+            $html .= '<tr>';
+            $html .= '<td style="text-align:center">' . $no++ . '</td>';
+            $html .= '<td style="text-align:center">' . $value->nia . '</td>';
+            $html .= '<td style="text-align:center">' . $value->nama . '</td>';
+            $html .= '<td style="text-align:center">' . $value->jenis_kelamin . '</td>';
+            $html .= '<td style="text-align:center">' . $value->alamat . '</td>';
+    
+            // Dapatkan total simpanan pokok per anggota menggunakan model
+            $total_simpanan_pokok_anggota = $this->SimpananPokok_model->total_simpanan_pokok_per_anggota_q($value->id_anggota);
+    
+            // Format jumlah simpanan pokok per anggota menjadi format Rupiah
+            $total_simpanan_pokok_anggota_rp = 'Rp ' . number_format((float)$total_simpanan_pokok_anggota, 0, ',', '.');
+    
+            $html .= '<td style="text-align:center">' . $total_simpanan_pokok_anggota_rp . '</td>'; // Tambahkan nilai simpanan pokok
+            $html .= '</tr>';
+        }
+    
+        // Menambahkan jumlah simpanan pokok seluruh anggota
+        $total_simpanan_pokok_all = $this->SimpananPokok_model->total_simpanan_pokok_all();
+        $total_simpanan_pokok_all_rp = 'Rp ' . number_format($total_simpanan_pokok_all, 0, ',', '.');
+        $html .= '<tr>';
+        $html .= '<td colspan="4"></td>'; // Kolom kosong untuk memisahkan total simpanan pokok seluruh anggota
+        $html .= '<td style="text-align:center; font-weight:bold">Jumlah Simpanan Pokok Seluruh Anggota</td>';
+        $html .= '<td style="text-align:center">' . $total_simpanan_pokok_all_rp . '</td>';
+        $html .= '</tr>';
+    
+        $html .= '</table>';
+    
+        $pdf->SetY(25);
+        
+        // Write HTML content to PDF
+        $pdf->writeHTML($html, true, false, true, false, '');
+        
+        // Close and output PDF document
+        $pdf->Output('data_anggota.pdf', 'I');
     }
     
 

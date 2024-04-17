@@ -68,8 +68,8 @@
                       <th>NIA</th>
                       <th>Nama Anggota</th>
                       <th>Jenis Kelamin</th>
-                      <th>Jumlah</th>
                       <th>Tanggal Dibayarkan</th>
+                      <th>Jumlah</th>
                       <th>Aksi</th>
                     </tr>
                   </thead>
@@ -81,8 +81,8 @@
                         <td><?php cetak($nilai->nia) ?></td>
                         <td><?php cetak($nilai->nama) ?></td>
                         <td><?php cetak($nilai->jenis_kelamin) ?></td>
-                        <td>Rp <?php echo number_format($nilai->jumlah, 0, ',', '.') ?></td>
                         <td><?php cetak($nilai->tanggal_dibayar ) ?></td>
+                        <td>Rp <?php echo number_format($nilai->jumlah, 0, ',', '.') ?></td>
                         <td>
                           <a class="btn btn-ref" href="<?php echo site_url('simpanan_pokok/edit/'.$nilai->id_simpanan_pokok) ?>"><i class="fa fa-fw fa-edit"></i>Edit</a>
                          <a href="#!" onclick="deleteConfirm('<?php echo site_url('simpanan_pokok/delete/'.$nilai->id_simpanan_pokok) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i>Hapus</a>

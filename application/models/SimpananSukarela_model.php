@@ -30,6 +30,14 @@ class SimpananSukarela_model extends CI_Model
 		return $this->db->get($this->_table)->result();
 	}
 
+	public function countAll() {
+		// Hitung jumlah seluruh pinjaman pada kolom jumlah_pinjaman dalam tabel pinjaman
+		$this->db->select_sum('jumlah');
+		$query = $this->db->get('simpanan_sukarela');
+		$result = $query->row_array();
+		return $result['jumlah'];
+	}
+
 	public function detail_simpanan_sukarela($id){
 		$this->db->select('*');
         $this->db->from('simpanan_sukarela');

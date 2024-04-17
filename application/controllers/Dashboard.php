@@ -5,7 +5,40 @@ class Dashboard extends MY_Controller {
 
 	public function index()
 	{
-		$this->load->view('admin/dashboard');
+		$this->load->model('Pegawai_model');
+		$this->load->model('Anggota_model');
+		$this->load->model('Pinjaman_model');
+		$this->load->model('Angsuran_model');
+		$this->load->model('SimpananPokok_model');
+		$this->load->model('SimpananSukarela_model');
+		$this->load->model('SimpananWajib_model');
+		
+
+        // Panggil metode countAll() dari model Pegawai_model
+        $data['jumlah_pegawai'] = $this->Pegawai_model->countAll();
+
+        // Panggil metode countAll() dari model Pegawai_model
+        $data['jumlah_anggota'] = $this->Anggota_model->countAll();
+
+		// Panggil metode countAll() dari model Pegawai_model
+		$data['jumlah_pinjaman'] = $this->Pinjaman_model->countAll();
+
+		// Panggil metode countAll() dari model Pegawai_model
+		$data['jumlah_angsuran'] = $this->Angsuran_model->countAll();
+
+		// Panggil metode countAll() dari model Pegawai_model
+		$data['jumlah_simpanan_pokok'] = $this->SimpananPokok_model->countAll();
+
+		// Panggil metode countAll() dari model Pegawai_model
+		$data['jumlah_simpanan_sukarela'] = $this->SimpananSukarela_model->countAll();
+
+		// Panggil metode countAll() dari model Pegawai_model
+		$data['jumlah_simpanan_wajib'] = $this->SimpananWajib_model->countAll();
+
+
+
+		
+		$this->load->view('admin/dashboard', $data);
 	}
 
 }

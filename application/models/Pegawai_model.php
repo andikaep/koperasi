@@ -44,6 +44,11 @@ class Pegawai_model extends CI_Model
 		return $this->db->get($this->_table)->result();
 	}
 
+	public function countAll() {
+        // Hitung jumlah pegawai dalam tabel pegawai
+        return $this->db->count_all('pegawai');
+    }
+	
 	public function getById($id){
 		return $this->db->get_where($this->_table, ["id_pegawai" => $id])->row();
 	}

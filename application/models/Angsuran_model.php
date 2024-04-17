@@ -36,6 +36,10 @@ class Angsuran_model extends CI_Model
 		return $this->db->get($this->_table)->result();
 	}
 
+	public function countAll() {
+        // Hitung jumlah pegawai dalam tabel pegawai
+        return $this->db->count_all('angsuran');
+    }
 
 	/**
 	 * @return mixed
