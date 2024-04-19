@@ -47,85 +47,53 @@
                 <h3 class="label label-primary" style="">--- Data Anggota ---</h3>
               </div>
                 <table class="table table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th style="background-color: #7f8c8d">NIK</th>
-                      <th style="background-color: #7f8c8d">Nama</th>
-                      <th style="background-color: #7f8c8d">Jenis Kelamin</th>
-                      <th style="background-color: #7f8c8d">Alamat</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                   
-                      <tr>
-                        <td style="background-color: #bdc3c7;"><?php cetak ($anggota->nia)  ?></td>
-                        <td style="background-color: #bdc3c7;"><?php cetak($anggota->nama ) ?></td>
-                        <td style="background-color: #bdc3c7;"><?php cetak($anggota->jenis_kelamin)  ?></td>
-                        <td style="background-color: #bdc3c7;"><?php cetak($anggota->alamat)  ?></td>
-                      </tr>
-                   
-                  </tbody>
+                <thead>
+    <tr style="background-color: #e6e6e6;">
+        <th>NIK</th>
+        <th>Nama</th>
+        <th>Jenis Kelamin</th>
+        <th>Alamat</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td style="background-color: #f2f2f2;"><?php cetak($anggota->nia) ?></td>
+        <td style="background-color: #f2f2f2;"><?php cetak($anggota->nama) ?></td>
+        <td style="background-color: #f2f2f2;"><?php cetak($anggota->jenis_kelamin) ?></td>
+        <td style="background-color: #f2f2f2;"><?php cetak($anggota->alamat) ?></td>
+    </tr>
+</tbody>
                 </table>
               </div>
-            <div class="box-body table-responsive">
-              <div class="box-header">
-                <h3 class="label label-primary" style="font-size: 12px, margin-right: -20px !important;">--- Detail Anak ---</h3>
-              </div>
-                 <table id="example2" class="table table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>No</th>
-                      <th>Nama Anak</th>
-                      <th>Jenjang Sekolah</th>
-                      <th>Nama Sekolah</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php $no = 1;?>
-                    <?php foreach ($anak as $nilai): ?>
-                      <tr>
-                        <td><?php cetak($no++) ?></td>
-                        <td><?php cetak($nilai->nama_anak ) ?></td>
-                        <td><?php cetak($nilai->jenjang_sekolah)  ?></td>
-                        <td><?php cetak($nilai->nama_sekolah)  ?></td>
-                        <td>
-                          <a class="btn btn-ref" href="<?php echo site_url('Anak_controller/edit/'.$nilai->id_anak) ?>"><i class="fa fa-fw fa-edit"></i>Edit</a>
-                          <a href="#!" onclick="deleteConfirm('<?php echo site_url('Anak_controller/delete/'.$nilai->id_anak) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i>Hapus</a>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                  
-                </table>
-              </div>
-
+           
 
               <div class="box-body table-responsive">
               <div class="box-header">
-                <h3 class="label label-primary" style="font-size: 12px, margin-right: -20px !important;">--- Detail Pasangan ---</h3>
+                <h3 class="label label-primary" style="font-size: 12px, margin-right: -20px !important;">--- Detail Pinjaman ---</h3>
               </div>
-                 <table id="example1" class="table table-bordered table-hover">
+              <table id="pinjamanTable" class="table table-bordered table-hover">
                   <thead>
-                    <tr>
+                  <tr>
                       <th>No</th>
-                      <th>Nama Anak</th>
-                      <th>Jenjang Sekolah</th>
-                      <th>Nama Sekolah</th>
+                      <th>Nama</th>
+                      <th>No Pinjaman</th>
+                      <th>Jumlah Pinjaman</th>
                       <th>Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php $no = 1;?>
-                    <?php foreach ($pasangan as $nilai): ?>
+                    <?php foreach ($pinjaman as $nilai): ?>
                       <tr>
                         <td><?php cetak($no++) ?></td>
-                        <td><?php cetak($nilai->nama_pasangan) ?></td>
-                        <td><?php cetak($nilai->pekerjaan)  ?></td>
-                        <td><?php cetak($nilai->alamat)  ?></td>
+                        <td><?php cetak($nilai->nama) ?></td>
+                        <td><?php cetak($nilai->no_pinjaman)  ?></td>
+                        
+                        <td><?php echo "Rp. " . (number_format($nilai->jumlah_pinjaman,2,',','.')) ?></td>
                         <td>
-                          <a class="btn btn-ref" href="<?php echo site_url('Pasangan_controller/edit/'.$nilai->id_pasangan) ?>"><i class="fa fa-fw fa-edit"></i>Edit</a>
-                          <a href="#!" onclick="deleteConfirm('<?php echo site_url('Pasangan_controller/delete/'.$nilai->id_pasangan) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i>Hapus</a>
+                          <a class="btn btn-ref" href="<?php echo site_url('pinjaman/edit/'.$nilai->id_pinjaman) ?>"><i class="fa fa-fw fa-edit"></i></a>
+                          <a href="#!" onclick="deleteConfirm('<?php echo site_url('pinjaman/delete/'.$nilai->id_pinjaman) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i></a>
+                          
                         </td>
                       </tr>
                     <?php endforeach; ?>
@@ -133,6 +101,76 @@
                   
                 </table>
               </div>
+
+              
+           
+              <!-- Tabel detail simpanan pokok -->
+<div class="box-body table-responsive">
+    <div class="box-header">
+        <h3 class="label label-primary" style="font-size: 12px, margin-right: -20px !important;">--- Detail Simpanan Pokok ---</h3>
+    </div>
+    <table id="simpananPokokTable" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Jumlah</th>
+                <th>Tanggal Dibayarkan</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $no = 1; ?>
+            <?php foreach ($simpanan_pokok as $nilai): ?>
+                <tr>
+                    <td><?php cetak($no++) ?></td>
+                    <td><?php cetak($nilai->nama) ?></td>
+                    <td><?php echo "Rp. " . (number_format($nilai->jumlah, 2, ',', '.')) ?></td>
+                    <td><?php cetak($nilai->tanggal_dibayar) ?></td>
+                    <td>
+                        <a class="btn btn-ref" href="<?php echo site_url('simpanan_pokok/edit/' . $nilai->id_simpanan_pokok) ?>"><i class="fa fa-fw fa-edit"></i></a>
+                        <a href="#!" onclick="deleteConfirm('<?php echo site_url('simpanan_pokok/delete/' . $nilai->id_simpanan_pokok) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i></a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<!-- Script JavaScript untuk inisialisasi DataTables -->
+<script>
+    $(document).ready(function() {
+        $('#simpananPokokTable, #pinjamanTable').DataTable({
+            // Aktifkan fitur pencarian, penyaringan, dan paginasi
+            searching: true,
+        ordering: true,
+        paging: true,
+        // Additional options as needed
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        // Set DataTables language according to your preferences
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data per halaman",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            infoEmpty: "Menampilkan 0 sampai 0 dari 0 data",
+            infoFiltered: "(disaring dari _MAX_ total data)",
+            paginate: {
+                first: "Pertama",
+                last: "Terakhir",
+                next: "Selanjutnya",
+                previous: "Sebelumnya"
+            },
+            aria: {
+                sortAscending: ": aktifkan untuk mengurutkan kolom secara ascending",
+                sortDescending: ": aktifkan untuk mengurutkan kolom secara descending"
+            },
+            zeroRecords: "Tidak ada hasil yang ditemukan.<br>Mohon periksa kembali kata kunci pencarian." // Custom message when no matching records are found
+        }
+    });
+});
+</script>
+
+
               
               <!-- /.box-body -->
             </div>

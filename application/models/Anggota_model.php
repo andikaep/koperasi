@@ -58,6 +58,24 @@ class Anggota_model extends CI_Model
         return $query->result();
 	}
 
+	public function detail_pinjaman($id){
+		$this->db->select('*');
+        $this->db->from('pinjaman');
+        $this->db->join('anggota', 'pinjaman.id_anggota = anggota.id_anggota');
+        $this->db->where('anggota.id_anggota', $id);
+        $query = $this->db->get();
+        return $query->result();
+	}
+
+	public function detail_simpanan_pokok($id){
+		$this->db->select('*');
+        $this->db->from('simpanan_pokok');
+        $this->db->join('anggota', 'simpanan_pokok.id_anggota = anggota.id_anggota');
+        $this->db->where('anggota.id_anggota', $id);
+        $query = $this->db->get();
+        return $query->result();
+	}
+
 	public function detail_pasangan($id){
 		$this->db->select('*');
         $this->db->from('pasangan');

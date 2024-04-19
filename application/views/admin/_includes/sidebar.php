@@ -31,9 +31,14 @@
         <li class="header">Menu</li>
 
         <li><a href="<?php echo base_url('') ?>"><i class="fa fa-book"></i> <span>Dashboard</span></a></li>
-        <li><a href="<?php echo base_url('pegawai') ?>"><i class="fa fa-fw fa-user-plus"></i> <span>Pegawai</span></a>
+        <?php if ($this->session->userdata('level') == 1): ?>
+        <li><a href="<?php echo base_url('pegawai') ?>"><i class="fa fa-fw fa-user-plus"></i> <span>Pegawai</span></a></li>
+        
+          
         <li><a href="<?php echo base_url('anggota') ?>"><i class="fa fa-fw fa-child"></i> <span>Anggota Koperasi</span></a>
         </li>
+        <?php endif; ?>
+        <?php if ($this->session->userdata('level') == 1 || $this->session->userdata('level') == 2) : ?>
         <li class="treeview">
           <a href="#">
             <i class="fa fa-fw fa-dollar"></i> <span>Simpanan</span>
@@ -62,6 +67,11 @@
           </ul>
         </li>
         </li>
+        <?php endif; ?>
+        <?php if ($this->session->userdata('level') == 1): ?>
+        <li><a href="<?php echo base_url('pengguna') ?>"><i class="fa fa-fw fa-users"></i> <span>Manajemen Pengguna</span></a>
+        </li>
+        <?php endif; ?>
         <li><a href="<?php echo base_url('pinjaman/simulasi') ?>"><i class="fa fa-fw fa-calculator"></i> <span>Simulasi Pinjaman</span></a>
         </li>
         <li><a href="<?php echo base_url('calculator') ?>"><i class="fa fa-fw fa-calculator"></i> <span>Kalkulator</span></a>

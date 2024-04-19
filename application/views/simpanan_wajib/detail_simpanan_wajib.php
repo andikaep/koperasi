@@ -6,7 +6,7 @@
 
     <?php $this->load->view("admin/_includes/header.php") ?>
     <?php $this->load->view("admin/_includes/sidebar.php") ?>
-
+    <script src="<?php echo base_url('js/custom_table.js'); ?>"></script>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -58,7 +58,7 @@
               <div class="box-header">
                 <h3 class="label label-primary" style="font-size: 12px, margin-right: -20px !important;">--- Detail Simpanan Wajib ---</h3>
               </div>
-                 <table id="example2" class="table table-bordered table-hover">
+                 <table id="customTable" class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>No</th>

@@ -70,26 +70,14 @@ class SimpananPokok_model extends CI_Model
 	}
 	
 	public function total_simpanan_pokok_per_anggota()
-{
+	{
     $this->db->select('id_anggota, SUM(jumlah) as total_simpanan_pokok');
     $this->db->from('simpanan_pokok');
     $this->db->group_by('id_anggota');
     $query = $this->db->get();
     return $query->result(); // Mengembalikan hasil dalam bentuk objek hasil query
-}
+	}
 
-public function total_simpanan_pokok_per_anggota_q()
-{
-    $this->db->select('id_anggota, SUM(jumlah) as total_simpanan_pokok');
-    $this->db->from('simpanan_pokok');
-    $this->db->group_by('id_anggota');
-    $query = $this->db->get();
-    $result = $query->result_array(); // Mengambil hasil dalam bentuk array dari array hasil query
-    return $result; // Mengembalikan hasil dalam bentuk array dari array hasil query
-}
-
-
-	
 		// public function detail_simpanan_pokokall(){
 		// 	$this->db->select('*');
 	 //        $this->db->from('simpanan_pokok');

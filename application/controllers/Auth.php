@@ -66,13 +66,18 @@ class Auth extends CI_Controller {
 			 // Buat session flashdata
 			redirect('Auth'); // Redirect ke halaman login
 		}else{
-			if($password == $user->password){ // Jika password yang diinput sama dengan password yang didatabase
+			if (password_verify($password, $user->password)) { // Jika password yang diinput sama dengan password yang didatabase
 				$session = array(
 					'authenticated'=>true, // Buat session authenticated dengan value true
 					'username'=>$user->username,  // Buat session username
 					'nama'=>$user->nama, // Buat session authenticated
 					'id_user'=>$user->id_user
 				);
+				$user_level = $this->User_model->get_user_level($username);
+				$session['level'] = $user_level;
+				// Ambil waktu terakhir login pengguna
+				$last_login = $this->User_model->update_last_login($username);
+				$session['last_login'] = $last_login;
 				$this->session->set_userdata($session); // Buat session sesuai $session
 				redirect('Dashboard', $user);
 

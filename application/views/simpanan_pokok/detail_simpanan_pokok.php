@@ -6,7 +6,7 @@
 
     <?php $this->load->view("admin/_includes/header.php") ?>
     <?php $this->load->view("admin/_includes/sidebar.php") ?>
-
+    <script src="<?php echo base_url('js/custom_table.js'); ?>"></script>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -61,7 +61,7 @@
               <div class="box-header">
                  <a href="<?php echo base_url("simpanan_pokok/export_detail"); ?>" class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Excel</a>
               </div>
-                 <table id="example2" class="table table-bordered table-hover">
+                 <table id="customTable" class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>No</th>

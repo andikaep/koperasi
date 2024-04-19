@@ -6,7 +6,7 @@
 
     <?php $this->load->view("admin/_includes/header.php") ?>
     <?php $this->load->view("admin/_includes/sidebar.php") ?>
-
+    <script src="<?php echo base_url('js/custom_table.js'); ?>"></script>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -55,13 +55,13 @@
             <div class="box">
               <div class="box-header">
                 <a href="<?php echo base_url('anggota/add') ?>" class="btn btn-tosca"><i class="fa fa-fw fa-plus"></i>Tambah</a>
-                <a href="<?php echo base_url("anggota/export"); ?>"  class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Excel</a>
-                <a href="<?php echo base_url("anggota/export_pdf"); ?>" class="btn btn-ijo"><i class="fa fa-fw fa-download"></i>Export PDF</a>
+                <a href="<?php echo base_url("anggota/export"); ?>"  class="btn btn-carot"><i class="fa fa-fw fa-file-excel-o"></i>Export Excel</a>
+                <a href="<?php echo base_url("anggota/export_pdf"); ?>" class="btn btn-ijo"><i class="fa fa-fw fa-file-pdf-o"></i>Export PDF</a>
                 <a class="btn btn-ijo" href="<?php echo base_url("anggota/form"); ?>"><i class="fa fa-fw fa-upload"></i>Import Data</a>
               </div>
               <!-- /.box-header -->
               <div class="box-body table-responsive">
-                <table id="example1" class="table table-bordered table-hover">
+                <table id="customTable" class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>No</th>

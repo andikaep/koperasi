@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <?php $this->load->view("admin/_includes/head.php") ?>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -16,9 +18,10 @@
 
   .small-box:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 20px rgba(0, 0, 255, 0.3); /* Shadow biru lebih jelas */
-    background-color: #007bff; /* Warna biru pada hover */
-  }
+    box-shadow: 0 12px 20px rgba(0, 0, 255, 0.8); /* Shadow biru yang sangat jelas */
+    background-color: #4d4dff; /* Warna biru pada hover */
+}
+
 
   .inner {
     padding: 20px;
@@ -49,15 +52,29 @@
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
 	  <!-- Alert -->
-	  <?php if ($this->session->flashdata('success')): ?>
-		  <div class="box-body">
-			  <div class="alert alert-info alert-dismissible">
-				  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				  <h4><i class="icon fa fa-info"></i>Alert!</h4>
-				  <?php echo $this->session->flashdata('success'); ?>
-			  </div>
-		  </div>
-	  <?php endif; ?>
+	  <!-- Alert -->
+    <?php if ($this->session->flashdata('success')): ?>
+        <div class="box-body">
+          <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-info"></i>Alert!</h4>
+            <?php echo $this->session->flashdata('success'); ?>
+          </div>
+        </div>
+      <?php endif; ?>
+      <!-- Alert -->
+      <script>
+// Tampilkan alert jika pesan flashdata berhasil diset
+<?php if ($this->session->set_flashdata('success')): ?>
+  <div class="box-body">
+          <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-info"></i>Alert!</h4>
+    <?php echo $this->session->set_flashdata('success'); ?>
+    </div>
+        </div>
+<?php endif; ?>
+</script>
 	  <!-- Alert -->
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -76,6 +93,7 @@
     <section class="content">
       <!-- Small boxes (Stat box) -->
       <div class="row">
+      <?php if ($this->session->userdata('level') == 1): ?>
       <div class="col-lg-3 col-xs-6">
   <!-- small box -->
   <a href="pegawai" style="color: inherit; text-decoration: none; position: relative;">
@@ -110,7 +128,8 @@
       <div class="small-box-footer" style="position: absolute; bottom: 0; left: 0; width: 100%; background-color: #ed5744; color: #fff; padding: 10px; text-align: center;">Lihat <i class="fa fa-arrow-circle-right"></i></div>
     </div>
   </a>
-</div>
+</div> <?php endif; ?>
+<?php if ($this->session->userdata('level') == 1 || $this->session->userdata('level') == 2) : ?>
     <div class="col-lg-3 col-xs-6">
   <!-- small box -->
   <a href="pinjaman" style="color: inherit; text-decoration: none; position: relative;">
@@ -120,7 +139,7 @@
         <p>Koperasi Desa Beji</p>
       </div>
       <div class="icon">
-      <i class="fa fa-users"></i>
+      <i class="fa fa-credit-card"></i>
       </div>
       <div class="small-box-footer" style="position: absolute; bottom: 0; left: 0; width: 100%; background-color: #04b765; color: #fff; padding: 10px; text-align: center;">Lihat <i class="fa fa-arrow-circle-right"></i></div>
     </div>
@@ -135,7 +154,7 @@
         <p>Koperasi Desa Beji</p>
       </div>
       <div class="icon">
-      <i class="ion ion-pie-graph"></i>
+      <i class='fa fa-google-wallet'></i>
       </div>
       <div class="small-box-footer" style="position: absolute; bottom: 0; left: 0; width: 100%; background-color: #f8a41e; color: #fff; padding: 10px; text-align: center;">Lihat <i class="fa fa-arrow-circle-right"></i></div>
     </div>
@@ -201,6 +220,7 @@
     </div>
   </a>
 </div>
+<?php endif; ?>
 <div class="col-lg-3 col-xs-6">
   <!-- small box -->
   <a href="pinjaman/simulasi" style="color: inherit; text-decoration: none; position: relative;">
@@ -216,6 +236,22 @@
     </div>
   </a>
 </div>
+<?php if ($this->session->userdata('level') == 1): ?>
+<div class="col-lg-3 col-xs-6">
+  <!-- small box -->
+  <a href="pengguna" style="color: inherit; text-decoration: none; position: relative;">
+  <div class="small-box" style="background-color: #b4a7d6;">
+      <div class="inner">
+      <h4><?php echo $jumlah_pengguna; ?> Pengguna Aplikasi</h4>
+        <p>Koperasi Desa Beji</p>
+      </div>
+      <div class="icon">
+      <i class="fa fa-users"></i>
+      </div>
+      <div class="small-box-footer" style="position: absolute; bottom: 0; left: 0; width: 100%; background-color: #bcade2; color: #fff; padding: 10px; text-align: center;">Lihat <i class="fa fa-arrow-circle-right"></i></div>
+    </div>
+  </a>
+</div> <?php endif; ?>
         <!-- ./col -->
       </div>
       <!-- /.row -->

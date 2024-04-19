@@ -6,7 +6,7 @@
 
     <?php $this->load->view("admin/_includes/header.php") ?>
     <?php $this->load->view("admin/_includes/sidebar.php") ?>
-
+    <script src="<?php echo base_url('js/custom_table.js'); ?>"></script>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -44,7 +44,7 @@
               <!--  -->
               <!-- /.box-header -->
               <div class="box-body table-responsive">
-                <table id="example1" class="table table-bordered table-hover">
+                <table id="customTable" class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>No</th>
@@ -71,16 +71,6 @@
                       </tr>
                     <?php endforeach; ?>
                   </tbody>
-                  <tfoot>
-                    <tr>
-                      <th>No</th>
-                      <th>NIK</th>
-                      <th>Nama</th>
-                      <th>Jenis Kelamin</th>
-                      <th>Alamat</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </tfoot>
                 </table>
               </div>
               <!-- /.box-body -->

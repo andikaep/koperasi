@@ -35,12 +35,21 @@
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
-  <div class="pull-right">
-    <a href="<?php echo base_url('Auth/logout') ?>" class="btn btn-default btn-flat">
-      <i class="fa fa-sign-out"></i> Keluar
-    </a>
-  </div>
+    <div class="pull-left">
+        <!-- Tautan untuk mengubah password -->
+        <a href="<?php echo base_url('pengguna/edit_password/'.$this->session->userdata('id_user')) ?>" class="btn btn-default btn-flat">
+            <i class="fa fa-lock"></i> Ubah Password
+        </a>
+    </div>
+    <div class="pull-right">
+        <!-- Tautan untuk keluar -->
+        <a href="<?php echo base_url('Auth/logout') ?>" class="btn btn-default btn-flat">
+            <i class="fa fa-sign-out"></i> Keluar
+        </a>
+    </div>
 </li>
+
+
 
             </ul>
           </li>

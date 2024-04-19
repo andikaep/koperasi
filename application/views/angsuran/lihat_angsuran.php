@@ -13,6 +13,7 @@
 
   <?php $this->load->view("admin/_includes/header.php") ?>
   <?php $this->load->view("admin/_includes/sidebar.php") ?>
+  <script src="<?php echo base_url('js/custom_table.js'); ?>"></script>
 
 
   <!-- Content Wrapper. Contains page content -->
@@ -63,12 +64,12 @@
           <div class="box">
             <div class="box-header">
               <a href="<?php echo base_url('angsuran/listPinjamanAnggota') ?>" class="btn btn-tosca"><i class="fa fa-fw fa-plus"></i>Tambah</a>
-              <button class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Data</button>
-              <button class="btn btn-ijo"><i class="fa fa-fw fa-upload"></i>Import Data</button>
+              <!-- <button class="btn btn-carot"><i class="fa fa-fw fa-download"></i>Export Data</button>
+              <button class="btn btn-ijo"><i class="fa fa-fw fa-upload"></i>Import Data</button> -->
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive">
-              <table id="example1" class="table table-bordered table-hover">
+              <table id="customTable" class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>No</th>

@@ -409,73 +409,85 @@ public function export_detail(){
     }
 
     public function export_pdf() {
-        // Load library TCPDF
-        $this->load->library('tcpdf/tcpdf');
-        
-        // Create new PDF document
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        
-        // Set document information
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetTitle('Data Anggota');
-        $pdf->SetHeaderData('', '', 'Koperasi Desa Beji', '');
-        
-        // Add a page
-        $pdf->AddPage();
-        
-        // Set some content to display
-        $html = '<h1 style="text-align:center">Data Anggota Koperasi</h1>';
-        $html .= '<table border="1">';
-        $html .= '<tr>';
-        $html .= '<th style="text-align:center">No</th>';
-        $html .= '<th style="text-align:center">NIA</th>';
-        $html .= '<th style="text-align:center">Nama</th>';
-        $html .= '<th style="text-align:center">Jenis Kelamin</th>';
-        $html .= '<th style="text-align:center">Alamat</th>';
-        $html .= '<th style="text-align:center">Simpanan Pokok</th>'; // Tambahkan kolom untuk simpanan pokok
-        $html .= '</tr>';
-        $no = 1;
-        
-        // Get data anggota
-        $anggota = $this->Anggota_model->getAll();
-        
-        foreach ($anggota as $value) {
-            $html .= '<tr>';
-            $html .= '<td style="text-align:center">' . $no++ . '</td>';
-            $html .= '<td style="text-align:center">' . $value->nia . '</td>';
-            $html .= '<td style="text-align:center">' . $value->nama . '</td>';
-            $html .= '<td style="text-align:center">' . $value->jenis_kelamin . '</td>';
-            $html .= '<td style="text-align:center">' . $value->alamat . '</td>';
-    
-            // Dapatkan total simpanan pokok per anggota menggunakan model
-            $total_simpanan_pokok_anggota = $this->SimpananPokok_model->total_simpanan_pokok_per_anggota_q($value->id_anggota);
-    
-            // Format jumlah simpanan pokok per anggota menjadi format Rupiah
-            $total_simpanan_pokok_anggota_rp = 'Rp ' . number_format((float)$total_simpanan_pokok_anggota, 0, ',', '.');
-    
-            $html .= '<td style="text-align:center">' . $total_simpanan_pokok_anggota_rp . '</td>'; // Tambahkan nilai simpanan pokok
-            $html .= '</tr>';
-        }
-    
-        // Menambahkan jumlah simpanan pokok seluruh anggota
-        $total_simpanan_pokok_all = $this->SimpananPokok_model->total_simpanan_pokok_all();
-        $total_simpanan_pokok_all_rp = 'Rp ' . number_format($total_simpanan_pokok_all, 0, ',', '.');
-        $html .= '<tr>';
-        $html .= '<td colspan="4"></td>'; // Kolom kosong untuk memisahkan total simpanan pokok seluruh anggota
-        $html .= '<td style="text-align:center; font-weight:bold">Jumlah Simpanan Pokok Seluruh Anggota</td>';
-        $html .= '<td style="text-align:center">' . $total_simpanan_pokok_all_rp . '</td>';
-        $html .= '</tr>';
-    
-        $html .= '</table>';
-    
-        $pdf->SetY(25);
-        
-        // Write HTML content to PDF
-        $pdf->writeHTML($html, true, false, true, false, '');
-        
-        // Close and output PDF document
-        $pdf->Output('data_anggota.pdf', 'I');
+    // Load library TCPDF
+    $this->load->library('tcpdf/tcpdf');
+
+    // Create new PDF document
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    // Set document information
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetTitle('Data Simpanan Pokok');
+    $pdf->SetHeaderData('', '', 'Koperasi Desa Beji', '');
+
+    // Add a page
+    $pdf->AddPage();
+
+    // Set some content to display
+    $html = '<h1 style="text-align:center">Data Simpanan Pokok</h1>';
+    $html .= '<table border="1">';
+    $html .= '<tr>';
+    $html .= '<th style="text-align:center">No</th>';
+    $html .= '<th style="text-align:center">NIA</th>';
+    $html .= '<th style="text-align:center">Nama</th>';
+    $html .= '<th style="text-align:center">Jenis Kelamin</th>';
+    $html .= '<th style="text-align:center">Alamat</th>';
+    $html .= '<th style="text-align:center">Simpanan Pokok</th>'; // Tambahkan kolom untuk simpanan pokok
+    $html .= '</tr>';
+    $no = 1;
+
+    // Get data anggota
+    // Get data anggota
+$anggota = $this->Anggota_model->getAll();
+
+// Get total simpanan pokok per anggota
+$total_simpanan_pokok_per_anggota = array();
+$total_simpanan_pokok_anggota = $this->SimpananPokok_model->total_simpanan_pokok_per_anggota();
+foreach ($total_simpanan_pokok_anggota as $total) {
+    $total_simpanan_pokok_per_anggota[$total->id_anggota] = $total->total_simpanan_pokok;
+}
+
+// Iterate through each anggota and display their information
+foreach ($anggota as $value) {
+    $html .= '<tr>';
+    $html .= '<td style="text-align:center">' . $no++ . '</td>';
+    $html .= '<td style="text-align:center">' . $value->nia . '</td>';
+    $html .= '<td style="text-align:center">' . $value->nama . '</td>';
+    $html .= '<td style="text-align:center">' . $value->jenis_kelamin . '</td>';
+    $html .= '<td style="text-align:center">' . $value->alamat . '</td>';
+    // Periksa apakah kunci ada dalam array
+    if (array_key_exists($value->id_anggota, $total_simpanan_pokok_per_anggota)) {
+        // Jika ada, tampilkan nilai total simpanan pokok
+        $html .= '<td style="text-align:center">' . 'Rp ' . number_format($total_simpanan_pokok_per_anggota[$value->id_anggota], 0, ',', '.') . '</td>';
+    } else {
+        // Jika tidak, tampilkan teks kosong
+        $html .= '<td style="text-align:center"></td>';
     }
+    
+    $html .= '</tr>';
+}
+
+
+    // Menambahkan jumlah simpanan pokok seluruh anggota
+    $total_simpanan_pokok_all = $this->SimpananPokok_model->total_simpanan_pokok_all();
+    $total_simpanan_pokok_all_rp = 'Rp ' . number_format($total_simpanan_pokok_all, 0, ',', '.');
+    $html .= '<tr>';
+    $html .= '<td colspan="4"></td>'; // Kolom kosong untuk memisahkan total simpanan pokok seluruh anggota
+    $html .= '<td style="text-align:center; font-weight:bold">Total Simpanan Pokok</td>';
+    $html .= '<td style="text-align:center">' . $total_simpanan_pokok_all_rp . '</td>';
+    $html .= '</tr>';
+
+    $html .= '</table>';
+
+    $pdf->SetY(25);
+
+    // Write HTML content to PDF
+    $pdf->writeHTML($html, true, false, true, false, '');
+
+    // Close and output PDF document
+    $pdf->Output('data_simpanan_pokok.pdf', 'I');
+}
+
     
 
 }

@@ -3,40 +3,35 @@
 /**
 * 
 */
-class Pegawai_model extends CI_Model
+class Pengguna_model extends CI_Model
 {
 	
-	private $_table= "pegawai";
+	private $_table= "user";
 
-	public $id_pegawai;
-	public $nik;
+	public $id_user;
+	public $username;
+	public $password;
 	public $nama;
-	public $alamat;
-	public $jabatan;
-	public $nohp;
+	public $level;
 
 	public function rules()
 	{
 		return [
-			['field' => 'nik',
-			'label' => 'nik',
+			['field' => 'username',
+			'label' => 'username',
 			'rules' => 'required'],
+
+			['field' => 'password',
+			'label' => 'password',
+			'rules' => ''],
 
 			['field' => 'nama',
 			'label' => 'nama',
 			'rules' => 'required'],
 
-			['field' => 'alamat',
-			'label' => 'alamat',
-			'rules' => 'required'],
-
-			['field' => 'jabatan',
-			'label' => 'jabatan',
-			'rules' => 'required'],
-
-			['field' => 'nohp',
-			'label' => 'nohp',
-			'rules' => 'required|numeric']
+			['field' => 'level',
+			'label' => 'level',
+			'rules' => 'required']
 		];
 	}
 
@@ -45,42 +40,48 @@ class Pegawai_model extends CI_Model
 	}
 
 	public function countAll() {
-        // Hitung jumlah pegawai dalam tabel pegawai
-        return $this->db->count_all('pegawai');
+        // Hitung jumlah pengguna dalam tabel pengguna
+        return $this->db->count_all('user');
     }
 	
 	public function getById($id){
-		return $this->db->get_where($this->_table, ["id_pegawai" => $id])->row();
+		return $this->db->get_where($this->_table, ["id_user" => $id])->row();
 	}
 
 	public function save(){
 		$post = $this->input->post();
-		$this->id_pegawai = uniqid();
-		$this->nik = $post["nik"];
+		$this->username = $post["username"];
+		$this->password = password_hash($post["password"], PASSWORD_DEFAULT);
 		$this->nama = $post["nama"];
-		$this->alamat = $post["alamat"];
-		$this->jabatan = $post["jabatan"];
-		$this->nohp = $post["nohp"];
+		$this->level = $post["level"];
 		$this->db->insert($this->_table, $this);
 	}
 	
 	public function update($id){
 		$data = array(
-			"nik" => $this->input->post('nik'),
+			"username" => $this->input->post('username'),
 			"nama" => $this->input->post('nama'),
-			"alamat" => $this->input->post('alamat'),
-			"jabatan" => $this->input->post('jabatan'),
-			"nohp" => $this->input->post('nohp')
+			"level" => $this->input->post('level')
 		);
 
-		$this->db->where('id_pegawai', $id);
-	    $this->db->update('pegawai', $data); // Untuk mengeksekusi perintah update data
+		$this->db->where('id_user', $id);
+	    $this->db->update('user', $data); // Untuk mengeksekusi perintah update data
 	}
+
+    public function update_password($id){
+        $data = array(
+            "password" => password_hash($this->input->post('password'), PASSWORD_DEFAULT)
+        );
+    
+        $this->db->where('id_user', $id);
+        $this->db->update('user', $data); // Untuk mengeksekusi perintah update data
+    }
+    
 
 	// Fungsi untuk melakukan menghapus data siswa berdasarkan NIS siswa
 	public function delete($id){
-		$this->db->where('id_pegawai', $id);
-    $this->db->delete('pegawai'); // Untuk mengeksekusi perintah delete data
+		$this->db->where('id_user', $id);
+    $this->db->delete('user'); // Untuk mengeksekusi perintah delete data
 	}
 
 	// Fungsi untuk melakukan proses upload file
@@ -114,7 +115,7 @@ class Pegawai_model extends CI_Model
 
 	// Buat sebuah fungsi untuk melakukan insert lebih dari 1 data
 	public function insert_multiple($data){
-		$this->db->insert_batch('pegawai', $data);
+		$this->db->insert_batch('user', $data);
 	}
 }
 ?>

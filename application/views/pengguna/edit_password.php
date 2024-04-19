@@ -16,7 +16,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <?php if ($this->session->flashdata('success')): ?>
       <div class="alert alert-success" role="alert">
         <?php echo $this->session->flashdata('success'); ?>
-        <a href="<?php echo base_url('pegawai/index') ?>">Ok</a>
+        <a href="<?php echo base_url('pengguna/index') ?>">Ok</a>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span></button>
       </div>
@@ -25,12 +25,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <section class="content-header">
       <h1>
         Kelola
-        <small>Data Pegawai</small>
+        <small>Data Pengguna</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-fw fa-user-plus"></i> Pegawai</a></li>
-        <li><a href="<?php echo base_url('pegawai/index') ?>">Lihat Data Pegawai</a></li>
-        <li><a href="<?php echo base_url('pegawai/add') ?>">Tambah Data Pegawai</a></li>
+        <li><a href="#"><i class="fa fa-fw fa-user-plus"></i> Pengguna</a></li>
+        <li><a href="<?php echo base_url('pengguna/index') ?>">Lihat Data Pengguna</a></li>
+        <li><a href="<?php echo base_url('pengguna/add') ?>">Tambah Data Pengguna</a></li>
       </ol>
     </section>
     
@@ -47,48 +47,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form role="form" action="<?php echo base_url('pegawai/edit/'.$pegawai->id_pegawai) ?>" method="post">
-              <input type="hidden" name="id_pegawai" value="<?php echo $pegawai->id_pegawai?>" />
+            <form role="form" action="<?php echo base_url('pengguna/edit_password/'.$pengguna->id_user) ?>" method="post">
+              <input type="hidden" name="id_user" value="<?php echo $pengguna->id_user?>" />
               <div class="box-body">
-                <div class="form-group">
-                  <label>NIK</label>
-                  <input name="nik" class="form-control <?php echo form_error('nik') ? 'is-invalid':'' ?>" placeholder="Masukan NIK" value="<?php echo $pegawai->nik?>" type="number" oninput="this.value = this.value.slice(0, 16)"/>
-                  <div class="invalid-feedback">
-                    <?php echo form_error('nik') ?>
+              <div class="form-group">
+              <label><i class="fas fa-key"></i> Ubah Password</label>
+                    <input name="password" class="form-control <?php echo form_error('password') ? 'is-invalid':'' ?>" placeholder="Masukkan Password"type="text">
+                    <div class="invalid-feedback">
+                      <?php echo form_error('password') ?>
+                    </div>
+                    <small id="passwordHelp" class="form-text text-muted">
+    <span style="color: #28a745;">✓</span> Password harus terdiri dari minimal 8 karakter <br>
+    <span style="color: #28a745;">✓</span> Setidaknya satu huruf besar, satu huruf kecil, satu angka, dan satu karakter spesial.
+</small>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label>Nama</label>
-                  <input name="nama" class="form-control <?php echo form_error('nama') ? 'is-invalid':'' ?>" placeholder="Masukan Nama" value="<?php echo $pegawai->nama?>" type="text">
-                  <div class="invalid-feedback">
-                    <?php echo form_error('nama') ?>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>Alamat</label>
-                  <input name="alamat" class="form-control <?php echo form_error('alamat') ? 'is-invalid':'' ?>" placeholder="Masukan Alamat" value="<?php echo $pegawai->alamat?>" type="text"/>
-                  <div class="invalid-feedback">
-                    <?php echo form_error('alamat')?>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>Jabatan</label>
-                  <input name="jabatan" class="form-control <?php echo form_error('jabatan') ? 'is-invalid':'' ?>" placeholder="Masukan Jabatan" value="<?php echo $pegawai->jabatan?>" type="text"/>
-                  <div class="invalid-feedback">
-                    <?php echo form_error('jabatan')?>
-                  </div>
-                </div>
-                <div class="form-group">
-  <label for="nohp">Nomor Handphone</label>
-  <?php 
-  // Tambahkan angka 0 di depan nomor handphone jika diperlukan
-  $no_hp = $pegawai->nohp;
-  if (substr($no_hp, 0, 1) !== '0') {
-      $no_hp = '0' . $no_hp;
-  }
-  ?>
-  <input type="text" class="form-control" id="nohp" name="nohp" value="<?php echo $no_hp; ?>">
-</div>
+               
+
               </div>
               <!-- /.box-body -->
 

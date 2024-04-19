@@ -12,6 +12,7 @@ class Dashboard extends MY_Controller {
 		$this->load->model('SimpananPokok_model');
 		$this->load->model('SimpananSukarela_model');
 		$this->load->model('SimpananWajib_model');
+		$this->load->model('Pengguna_model');
 		
 
         // Panggil metode countAll() dari model Pegawai_model
@@ -34,6 +35,9 @@ class Dashboard extends MY_Controller {
 
 		// Panggil metode countAll() dari model Pegawai_model
 		$data['jumlah_simpanan_wajib'] = $this->SimpananWajib_model->countAll();
+
+		// Panggil metode countAll() dari model Pegawai_model
+		$data['jumlah_pengguna'] = $this->Pengguna_model->countAll();
 
 
 

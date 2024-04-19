@@ -24,6 +24,8 @@ class Anggota extends MY_Controller
 
         $anggota = $this->Anggota_model; 
         $data['anak'] = $this->Anggota_model->detail_anak($id);
+		$data['pinjaman'] = $this->Anggota_model->detail_pinjaman($id);
+		$data['simpanan_pokok'] = $this->Anggota_model->detail_simpanan_pokok($id);
         $data['pasangan'] = $this->Anggota_model->detail_pasangan($id);
         $data['anggota'] = $this->Anggota_model->getById($id);
 
