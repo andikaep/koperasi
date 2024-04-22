@@ -100,7 +100,7 @@
     <div class="small-box bg-aqua">
       <div class="inner">
         <h4><?php echo $jumlah_pegawai; ?> Pegawai</h4>
-        <p>Koperasi Desa Beji</p>
+        <!-- <p>Koperasi Desa Beji</p> -->
         <!-- Menampilkan jumlah pegawai -->
       </div>
       <div class="icon">
@@ -120,7 +120,6 @@
     <div class="small-box bg-red">
       <div class="inner">
       <h4><?php echo $jumlah_anggota; ?> Anggota</h4>
-        <p>Koperasi Desa Beji</p>
       </div>
       <div class="icon">
       <i class="fa fa-child"></i>
@@ -136,7 +135,6 @@
     <div class="small-box bg-green">
       <div class="inner">
       <h4>Rp <?php echo number_format($jumlah_pinjaman, 0, ',', '.'); ?> </h4><h5><strong>Jumlah Pinjaman</strong></h5>
-        <p>Koperasi Desa Beji</p>
       </div>
       <div class="icon">
       <i class="fa fa-credit-card"></i>
@@ -181,7 +179,6 @@
     <div class="small-box bg-teal">
       <div class="inner">
       <h4>Rp <?php echo number_format($jumlah_simpanan_wajib, 0, ',', '.'); ?></h4><h5><strong>Jumlah Simpanan Wajib</strong></h5>
-        <p>Koperasi Desa Beji</p>
       </div>
       <div class="icon">
       <i class="ion ion-pie-graph"></i>
@@ -196,7 +193,6 @@
     <div class="small-box bg-maroon">
       <div class="inner">
       <h4>Rp <?php echo number_format($jumlah_simpanan_sukarela, 0, ',', '.'); ?> </h4><h5><strong> Jumlah Simpanan Sukarela </strong> </h5>
-        <p>Koperasi Desa Beji</p>
       </div>
       <div class="icon">
       <i class="fa fa-cube"></i>
@@ -211,7 +207,6 @@
     <div class="small-box bg-olive">
       <div class="inner">
         <h4>Tambah Angsuran</h4>
-        <p>Koperasi Desa Beji</p>
       </div>
       <div class="icon">
       <i class="fa fa-money"></i>
@@ -227,7 +222,6 @@
     <div class="small-box bg-green">
       <div class="inner">
         <h4>Simulasi</h4>
-        <p>Koperasi Desa Beji</p>
       </div>
       <div class="icon">
       <i class="fa fa-calculator"></i>
@@ -237,13 +231,12 @@
   </a>
 </div>
 <?php if ($this->session->userdata('level') == 1): ?>
-<div class="col-lg-3 col-xs-6">
+  <div class="col-lg-3 col-xs-6">
   <!-- small box -->
   <a href="pengguna" style="color: inherit; text-decoration: none; position: relative;">
   <div class="small-box" style="background-color: #b4a7d6;">
       <div class="inner">
-      <h4><?php echo $jumlah_pengguna; ?> Pengguna Aplikasi</h4>
-        <p>Koperasi Desa Beji</p>
+      <h4 style="color: #fff;"><?php echo $jumlah_pengguna; ?> Pengguna Aplikasi</h4>
       </div>
       <div class="icon">
       <i class="fa fa-users"></i>
@@ -251,7 +244,8 @@
       <div class="small-box-footer" style="position: absolute; bottom: 0; left: 0; width: 100%; background-color: #bcade2; color: #fff; padding: 10px; text-align: center;">Lihat <i class="fa fa-arrow-circle-right"></i></div>
     </div>
   </a>
-</div> <?php endif; ?>
+</div>
+<?php endif; ?>
         <!-- ./col -->
       </div>
       <!-- /.row -->

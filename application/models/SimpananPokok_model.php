@@ -46,6 +46,15 @@ class SimpananPokok_model extends CI_Model
         return $query->result();
 	}
 
+	public function detail_simpanan_pokok_export_detail($id_anggota){
+		$this->db->select('*');
+		$this->db->from('simpanan_pokok');
+		$this->db->join('anggota', 'simpanan_pokok.id_anggota = anggota.id_anggota');
+		$this->db->where('anggota.id_anggota', $id_anggota);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
 	public function getAllByAnggotaId($id_anggota) {
         // Lakukan query ke database untuk mendapatkan semua data simpanan pokok berdasarkan ID anggota
         $query = $this->db->get_where('simpanan_pokok', array('id_anggota' => $id_anggota));
@@ -128,6 +137,66 @@ class SimpananPokok_model extends CI_Model
 	    $this->db->update('simpanan_pokok', $data); // Untuk mengeksekusi perintah update data
 	}
 
+	
+	public function filterByDate($id, $year, $month){
+		$this->db->select('*');
+		$this->db->from('simpanan_pokok');
+		$this->db->join('anggota', 'simpanan_pokok.id_anggota = anggota.id_anggota');
+		$this->db->where('anggota.id_anggota', $id);
+		
+		// Filter berdasarkan tahun
+		$this->db->where('YEAR(tanggal_dibayar)', $year);
+		
+		// Filter berdasarkan bulan jika bulan dipilih
+		if($month != '') {
+			$this->db->where('MONTH(tanggal_dibayar)', $month);
+		}
+		
+		$query = $this->db->get();
+		return $query->result();
+	}
+	
+	public function filterByDateRange($id, $start_date, $end_date){
+		$this->db->select('*');
+		$this->db->from('simpanan_pokok');
+		$this->db->join('anggota', 'simpanan_pokok.id_anggota = anggota.id_anggota');
+		$this->db->where('anggota.id_anggota', $id);
+		
+		// Filter berdasarkan rentang tanggal
+		$this->db->where('tanggal_dibayar >=', $start_date);
+		$this->db->where('tanggal_dibayar <=', $end_date);
+		
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	public function calculateTotalByDateRange($id, $start_date, $end_date) {
+        $this->db->select_sum('jumlah');
+        $this->db->from('simpanan_pokok');
+        $this->db->where('id_anggota', $id);
+        $this->db->where('tanggal_dibayar >=', $start_date);
+        $this->db->where('tanggal_dibayar <=', $end_date);
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result->jumlah;
+    }
+    
+    // Metode untuk menghitung total simpanan pokok berdasarkan tahun dan bulan
+    public function calculateTotalByDate($id, $year, $month) {
+        $this->db->select_sum('jumlah');
+        $this->db->from('simpanan_pokok');
+        $this->db->where('id_anggota', $id);
+        $this->db->where('YEAR(tanggal_dibayar)', $year);
+        if ($month != '') {
+            $this->db->where('MONTH(tanggal_dibayar)', $month);
+        }
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result->jumlah;
+    }
+	
+	
+	
 	public function hide($id){
 		$this->db->where('id_anggota', $id);
 		$this->_table->update('set_aktif == False');

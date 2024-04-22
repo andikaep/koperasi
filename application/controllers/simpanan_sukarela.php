@@ -25,10 +25,52 @@ class Simpanan_sukarela extends MY_Controller
     public function detail($id){
 
         // $data['anggota'] = $this->SimpananSukarelamodel->detail_simpanan_sukarelall();
+        $data['id_anggota'] = $id;
         $data['simpanan_sukarela'] = $this->SimpananSukarela_model->detail_simpanan_sukarela($id);
         $data['tot'] = $this->SimpananSukarela_model->total_simpanan_sukarela($id);
         $this->load->view("simpanan_sukarela/detail_simpanan_sukarela", $data);
     }
+
+    public function filterByDate($id){
+        // Tangkap nilai yang dikirimkan dari form
+        $year = $this->input->post('year');
+        $month = $this->input->post('month');
+        $start_date = $this->input->post('start_date');
+        $end_date = $this->input->post('end_date');
+        
+        // Simpan nilai-nilai tersebut dalam session
+        $this->session->set_userdata('filter_year', $year);
+        $this->session->set_userdata('filter_month', $month);
+        $this->session->set_userdata('filter_start_date', $start_date);
+        $this->session->set_userdata('filter_end_date', $end_date);
+        
+        // Tangkap nilai id_anggota
+        $data['id_anggota'] = $id;
+        
+        // Ambil total simpanan sukarela
+        $data['tot'] = $this->SimpananSukarela_model->total_simpanan_sukarela($id);
+        
+        // Periksa apakah rentang tanggal dipilih atau tidak
+        if (!empty($start_date) && !empty($end_date)) {
+            // Jika rentang tanggal dipilih, gunakan rentang tanggal
+            $data['simpanan_sukarela'] = $this->SimpananSukarela_model->filterByDateRange($id, $start_date, $end_date);
+            $data['total_simpanan_sukarela'] = $this->SimpananSukarela_model->calculateTotalByDateRange($id, $start_date, $end_date);
+        } else {
+            // Jika tidak, gunakan tahun dan bulan
+            $data['simpanan_sukarela'] = $this->SimpananSukarela_model->filterByDate($id, $year, $month);
+            $data['total_simpanan_sukarela'] = $this->SimpananSukarela_model->calculateTotalByDate($id, $year, $month);
+        }
+        
+        // Load view dengan data yang diperlukan
+        $this->load->view("simpanan_sukarela/detail_simpanan_sukarela", $data);
+        
+        // Bersihkan session setelah halaman dimuat kembali atau berpindah halaman
+        $this->session->unset_userdata('filter_year');
+        $this->session->unset_userdata('filter_month');
+        $this->session->unset_userdata('filter_start_date');
+        $this->session->unset_userdata('filter_end_date');
+    }
+
 
     public function add($id)
     {   
@@ -297,14 +339,15 @@ $write->save('php://output');
         $html .= '<td style="text-align:center">' . $value->jenis_kelamin . '</td>';
         $html .= '<td style="text-align:center">' . $value->alamat . '</td>';
         // Periksa apakah kunci ada dalam array
-         if (array_key_exists($value->id_anggota, $total_simpanan_sukarela_per_anggota)) {
+        if (array_key_exists($value->id_anggota, $total_simpanan_sukarela_per_anggota)) {
         // Jika ada, tampilkan nilai total simpanan pokok
-        $html .= '<td style="text-align:center">' . 'Rp ' . number_format($total_simpanan_sukarela_per_anggota[$value->id_anggota], 0, ',', '.') . '</td>';
+        $html .= '<td> ' .  'Rp ' . number_format($total_simpanan_sukarela_per_anggota[$value->id_anggota], 0, ',', '.') . '</td>';
         } else {
         // Jika tidak, tampilkan teks kosong
-        $html .= '<td style="text-align:center"></td>';
+        $html .= '<td></td>';
         }
-         $html .= '</tr>';
+    
+        $html .= '</tr>';
     }
     
     
@@ -312,9 +355,8 @@ $write->save('php://output');
         $total_simpanan_sukarela_all = $this->SimpananSukarela_model->total_simpanan_sukarela_all();
         $total_simpanan_sukarela_all_rp = 'Rp ' . number_format($total_simpanan_sukarela_all, 0, ',', '.');
         $html .= '<tr>';
-        $html .= '<td colspan="4"></td>'; // Kolom kosong untuk memisahkan total simpanan pokok seluruh anggota
-        $html .= '<td style="text-align:center; font-weight:bold">Total Simpanan Sukarela</td>';
-        $html .= '<td style="text-align:center">' . $total_simpanan_sukarela_all_rp . '</td>';
+        $html .= '<td colspan="5" style="text-align:center; font-weight:bold">Total Simpanan Sukarela</td>'; // Gabung kolom 0-4
+        $html .= '<td colspan="5" style="text-align:center">' . $total_simpanan_sukarela_all_rp . '</td>'; // Tetap di posisinya sekarang, di bawah kolom "Simpanan Pokok"
         $html .= '</tr>';
     
         $html .= '</table>';
@@ -326,6 +368,209 @@ $write->save('php://output');
     
         // Close and output PDF document
         $pdf->Output('data_anggota.pdf', 'I');
+    }
+
+    public function export_detail($id_anggota){
+        // Load plugin PHPExcel nya
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+    
+        // Panggil class PHPExcel nya
+        $excel = new PHPExcel();
+        // Settingan awal fil excel
+        $excel->getProperties()->setCreator('Ino Galwargan')
+            ->setLastModifiedBy('Ino Galwargan')
+            ->setTitle("Data Simpanan Sukarela")
+            ->setSubject("Simpanan Pokok")
+            ->setDescription("Laporan Simpanan Pokok")
+            ->setKeywords("Data Simpanan Sukarela");
+    
+        // Buat sebuah variabel untuk menampung pengaturan style dari header tabel
+        $style_col = array(
+            'font' => array('bold' => true), // Set font nya jadi bold
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, // Set text jadi ditengah secara horizontal (center)
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
+            ),
+            'borders' => array(
+                'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
+                'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
+                'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
+                'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
+            )
+        );
+    
+        // Set active sheet
+        $excel->setActiveSheetIndex(0);
+    
+        // Panggil function view yang ada di Anggota_model untuk menampilkan data anggota
+        $anggota = $this->Anggota_model->getAnggotaById_export_detail($id_anggota);
+    
+        // Ambil nama anggota
+        $nama_anggota = '';
+        $nia_anggota = '';
+        foreach ($anggota as $anggota_data) {
+            $nama_anggota = $anggota_data->nama;
+            $nia_anggota = $anggota_data->nia;
+            break; // Ambil hanya satu data
+        }
+    
+        // Tambahkan nama anggota di atas tabel
+// Tambahkan nama anggota di atas tabel
+$excel->getActiveSheet()->setCellValue('A1', 'Data Simpanan Sukarela');
+$excel->getActiveSheet()->setCellValue('A2', 'Nama: ' . $nama_anggota);
+$excel->getActiveSheet()->setCellValue('A3', 'NIA: ' . $nia_anggota);
+
+// Gabungkan sel untuk kolom "Data Simpanan Pokok", "Nama", dan "NIA"
+$excel->getActiveSheet()->mergeCells('A1:C1'); // Data Simpanan Pokok
+$excel->getActiveSheet()->mergeCells('A2:C2'); // Nama
+$excel->getActiveSheet()->mergeCells('A3:C3'); // NIA
+
+// Set align horizontal dan vertical untuk teks "Data Simpanan Pokok", "Nama", dan "NIA"
+$alignment = $excel->getActiveSheet()->getStyle('A1:C3')->getAlignment();
+$alignment->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Pusatkan teks secara horizontal
+$alignment->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER); // Pusatkan teks secara vertikal
+
+// Beri gaya tebal untuk teks "Nama" dan "NIA"
+$excel->getActiveSheet()->getStyle('A2:C3')->getFont()->setBold(true);
+
+// Tambahkan spasi di bawah NIA
+$excel->getActiveSheet()->mergeCells('A4:C4'); // Gabungkan sel untuk spasi
+$excel->getActiveSheet()->getRowDimension(4)->setRowHeight(20); // Set tinggi baris untuk memberikan spasi
+
+// Tambahkan kolom kosong di antara "NIA" dan "No"
+// Insert satu kolom kosong sebelum kolom A
+
+// Buat header tabel pada baris ke 5
+$excel->getActiveSheet()->setCellValue('A5', 'No');
+$excel->getActiveSheet()->setCellValue('B5', 'Tanggal Dibayarkan');
+$excel->getActiveSheet()->setCellValue('C5', 'Jumlah');
+
+// Apply style header yang telah kita buat tadi ke masing-masing kolom header
+$excel->getActiveSheet()->getStyle('A5')->applyFromArray($style_col);
+$excel->getActiveSheet()->getStyle('B5')->applyFromArray($style_col);
+$excel->getActiveSheet()->getStyle('C5')->applyFromArray($style_col);
+
+$numrow = 6; // Set baris pertama untuk isi tabel adalah baris ke 6
+
+// Ambil data simpanan pokok berdasarkan ID anggota
+$simpanan_sukarela = $this->SimpananSukarela_model->detail_simpanan_sukarela_export_detail($id_anggota); 
+
+// Looping data simpanan pokok
+foreach ($simpanan_sukarela as $simpanan_data) {
+    // Set data dalam kolom
+    $excel->getActiveSheet()->setCellValue('A' . $numrow, $numrow - 5); // Nomor urut
+    $excel->getActiveSheet()->setCellValue('B' . $numrow, $simpanan_data->tanggal_dibayar); // Tanggal dibayarkan
+    $excel->getActiveSheet()->setCellValue('C' . $numrow, 'Rp ' . number_format($simpanan_data->jumlah, 0, ',', '.')); // Jumlah dengan format rupiah
+
+    // Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
+    $excel->getActiveSheet()->getStyle('A' . $numrow)->applyFromArray($style_col);
+    $excel->getActiveSheet()->getStyle('B' . $numrow)->applyFromArray($style_col);
+    $excel->getActiveSheet()->getStyle('C' . $numrow)->applyFromArray($style_col);
+
+    $numrow++; // Tambah 1 setiap kali looping
+}
+
+    
+        // Hitung total jumlah simpanan pokok
+        $total_jumlah = array_sum(array_column($simpanan_sukarela, 'jumlah'));
+    
+        // Tambahkan total simpanan pokok di bawah tabel
+        $numrow += 1;
+        $excel->getActiveSheet()->setCellValue('A' . $numrow, 'Total Simpanan Sukarela');
+        $excel->getActiveSheet()->mergeCells('A' . $numrow . ':B' . $numrow); // Gabungkan sel untuk total
+        $excel->getActiveSheet()->setCellValue('C' . $numrow, 'Rp ' . number_format($total_jumlah, 0, ',', '.')); // Total dengan format rupiah
+    
+        // Apply style row yang telah kita buat tadi ke masing-masing baris (total)
+        $excel->getActiveSheet()->getStyle('A' . $numrow)->applyFromArray($style_col);
+        $excel->getActiveSheet()->getStyle('B' . $numrow)->applyFromArray($style_col);
+        $excel->getActiveSheet()->getStyle('C' . $numrow)->applyFromArray($style_col);
+    
+        // Set width kolom
+        $excel->getActiveSheet()->getColumnDimension('A')->setWidth(5); // Set width kolom A
+        $excel->getActiveSheet()->getColumnDimension('B')->setWidth(20); // Set width kolom B
+        $excel->getActiveSheet()->getColumnDimension('C')->setWidth(20); // Set width kolom C
+    
+        // Set height semua kolom menjadi auto (mengikuti height isi dari kolommnya, jadi otomatis)
+        $excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(-1);
+    
+        // Set orientasi kertas jadi LANDSCAPE
+        $excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+    
+        // Set judul file excel nya
+        $excel->getActiveSheet(0)->setTitle("Laporan Data Simpanan Sukarela");
+        $excel->setActiveSheetIndex(0);
+    
+        // Proses file excel
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Data Detail Simpanan Sukarela.xlsx"'); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        $write->save('php://output');
+    }
+
+    public function export_detail_pdf($id_anggota) {
+        // Load library TCPDF
+        $this->load->library('tcpdf/tcpdf');
+    
+        // Create new PDF document
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    
+        // Set document information
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('Data Simpanan Sukarela');
+        $pdf->SetHeaderData('', '', 'Koperasi Desa Beji', '');
+    
+        // Add a page
+        $pdf->AddPage();
+        
+        // Get data anggota
+        $anggota = $this->Anggota_model->getAnggotaById_export_detail($id_anggota);
+    
+        if ($anggota) {
+            foreach ($anggota as $anggota_item) {
+                // Set some content to display
+                $html = '<h1 style="text-align:center">Data Simpanan Sukarela</h1>';
+                $html .= '<p style="text-align:center; font-weight:bold">Nama: ' . $anggota_item->nama . '</p>';
+                $html .= '<p style="text-align:center; font-weight:bold">NIA: ' . $anggota_item->nia . '</p>';
+                $html .= '<table border="1">';
+                $html .= '<tr>';
+                $html .= '<th style="text-align:center">No</th>';
+                $html .= '<th style="text-align:center">Tanggal Dibayarkan</th>';
+                $html .= '<th style="text-align:center">Jumlah</th>'; // Tambahkan kolom untuk simpanan pokok
+                $html .= '</tr>';
+                $no = 1;
+    
+                // Fetch simpanan pokok data for the current anggota
+                $simpanan_sukarela = $this->SimpananSukarela_model->detail_simpanan_sukarela_export_detail($anggota_item->id_anggota);
+    
+                // Iterate through each simpanan pokok data
+                foreach ($simpanan_sukarela as $sukarela) {
+                    // Set nomor urut
+                    $html .= '<tr>';
+                    $html .= '<td style="text-align:center">' . $no++ . '</td>';
+                    $html .= '<td style="text-align:center">' . $sukarela->tanggal_dibayar . '</td>';
+                    $html .= '<td> Rp ' . number_format($sukarela->jumlah, 0, ',', '.') . '</td>';
+                    $html .= '</tr>';
+                }
+    
+                // Calculate and display total jumlah
+                $total_jumlah = array_sum(array_column($simpanan_sukarela, 'jumlah'));
+                $html .= '<tr>';
+                $html .= '<td colspan="2" style="text-align:center; font-weight:bold">Total Simpanan Sukarela</td>';
+                $html .= '<td style="text-align:center; font-weight:bold">Rp ' . number_format($total_jumlah, 0, ',', '.') . '</td>';
+                $html .= '</tr>';
+    
+                $html .= '</table>';
+    
+                $pdf->SetY(25);
+    
+                // Write HTML content to PDF
+                $pdf->writeHTML($html, true, false, true, false, '');
+    
+                // Close and output PDF document
+                $pdf->Output('data_simpanan_sukarela.pdf', 'I');
+            }
+        }
     }
 
 

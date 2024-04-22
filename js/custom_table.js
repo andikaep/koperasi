@@ -23,7 +23,7 @@ $(document).ready(function() {
                 sortAscending: ": aktifkan untuk mengurutkan kolom secara ascending",
                 sortDescending: ": aktifkan untuk mengurutkan kolom secara descending"
             },
-            zeroRecords: "Tidak ada hasil yang ditemukan.<br>Mohon periksa kembali kata kunci pencarian." // Custom message when no matching records are found
+            zeroRecords: "Tidak ada hasil yang ditemukan." // Custom message when no matching records are found
         }
     });
 });

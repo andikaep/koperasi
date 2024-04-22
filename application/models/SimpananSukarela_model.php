@@ -114,6 +114,15 @@ class SimpananSukarela_model extends CI_Model
 		$result = $query->row_array(); // Mengambil hasil dalam bentuk array
 		return $result['jumlah']; // Mengembalikan nilai jumlah
 	}
+
+	public function detail_simpanan_sukarela_export_detail($id_anggota){
+		$this->db->select('*');
+		$this->db->from('simpanan_sukarela');
+		$this->db->join('anggota', 'simpanan_sukarela.id_anggota = anggota.id_anggota');
+		$this->db->where('anggota.id_anggota', $id_anggota);
+		$query = $this->db->get();
+		return $query->result();
+	}
 	
 	public function total_simpanan_sukarela_per_anggota()
 	{
@@ -124,6 +133,62 @@ class SimpananSukarela_model extends CI_Model
     return $query->result();
 	}
 
+	public function filterByDate($id, $year, $month){
+		$this->db->select('*');
+		$this->db->from('simpanan_sukarela');
+		$this->db->join('anggota', 'simpanan_sukarela.id_anggota = anggota.id_anggota');
+		$this->db->where('anggota.id_anggota', $id);
+		
+		// Filter berdasarkan tahun
+		$this->db->where('YEAR(tanggal_dibayar)', $year);
+		
+		// Filter berdasarkan bulan jika bulan dipilih
+		if($month != '') {
+			$this->db->where('MONTH(tanggal_dibayar)', $month);
+		}
+		
+		$query = $this->db->get();
+		return $query->result();
+	}
+	
+	public function filterByDateRange($id, $start_date, $end_date){
+		$this->db->select('*');
+		$this->db->from('simpanan_sukarela');
+		$this->db->join('anggota', 'simpanan_sukarela.id_anggota = anggota.id_anggota');
+		$this->db->where('anggota.id_anggota', $id);
+		
+		// Filter berdasarkan rentang tanggal
+		$this->db->where('tanggal_dibayar >=', $start_date);
+		$this->db->where('tanggal_dibayar <=', $end_date);
+		
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	public function calculateTotalByDateRange($id, $start_date, $end_date) {
+        $this->db->select_sum('jumlah');
+        $this->db->from('simpanan_sukarela');
+        $this->db->where('id_anggota', $id);
+        $this->db->where('tanggal_dibayar >=', $start_date);
+        $this->db->where('tanggal_dibayar <=', $end_date);
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result->jumlah;
+    }
+    
+    // Metode untuk menghitung total simpanan sukarela berdasarkan tahun dan bulan
+    public function calculateTotalByDate($id, $year, $month) {
+        $this->db->select_sum('jumlah');
+        $this->db->from('simpanan_sukarela');
+        $this->db->where('id_anggota', $id);
+        $this->db->where('YEAR(tanggal_dibayar)', $year);
+        if ($month != '') {
+            $this->db->where('MONTH(tanggal_dibayar)', $month);
+        }
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result->jumlah;
+    }
 	// public function hide($id){
 	// 	$this->db->where('id_anggota', $id);
 	// 	$this->_table->update('set_aktif == False');

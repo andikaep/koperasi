@@ -45,9 +45,26 @@ class Anggota_model extends CI_Model
     }
 
 	public function getAnggotaById($id_anggota) {
-        $this->db->where('id_anggota', $id_anggota);
-        return $this->db->get('anggota')->row();
+    // Retrieve anggota data from the database based on the provided ID
+    $this->db->where('id_anggota', $id_anggota);
+    $query = $this->db->get('anggota');
+}
+
+public function getAnggotaById_export_detail($id_anggota) {
+    // Retrieve anggota data from the database based on the provided ID
+    $this->db->where('id_anggota', $id_anggota);
+    $query = $this->db->get('anggota');
+
+    // Check if any data is returned
+    if ($query->num_rows() > 0) {
+        // Return the result as an array of objects
+        return $query->result();
+    } else {
+        // If no data is found, return an empty array
+        return array();
     }
+}
+
 
 	public function detail_anak($id){
 		$this->db->select('*');

@@ -14,23 +14,67 @@ class Simpanan_pokok extends MY_Controller
         $this->load->library('form_validation');
     }
 
-    public function index()
-    {
+    // Controller: Simpanan_pokok.php
+
+public function index()
+{
+
     $data['total'] = $this->SimpananPokok_model->total_simpanan_pokok_all();
     $data["anggota"] = $this->Anggota_model->getAll();
     
     // Ambil total simpanan pokok untuk setiap anggota
     $data['total_anggota'] = $this->SimpananPokok_model->total_simpanan_pokok_per_anggota();
 
-    $this->load->view("simpanan_pokok/lihat_simpanan_pokok", $data);
-    }
+    // Load view dengan data yang sudah difilter
+    $this->load->view('simpanan_pokok/lihat_simpanan_pokok', $data);
+}
 
-    public function detail($id){
-        // $data['anggota'] = $this->SimpananPokok_model->detail_simpanan_pokokall();
-        $data['tot'] = $this->SimpananPokok_model->total_simpanan_pokok($id);
-        $data['simpanan_pokok'] = $this->SimpananPokok_model->detail_simpanan_pokok($id);
-        $this->load->view("simpanan_pokok/detail_simpanan_pokok", $data);
+public function detail($id){
+    $data['id_anggota'] = $id;
+    $data['tot'] = $this->SimpananPokok_model->total_simpanan_pokok($id);
+    $data['simpanan_pokok'] = $this->SimpananPokok_model->detail_simpanan_pokok($id);
+    $this->load->view("simpanan_pokok/detail_simpanan_pokok", $data);
+}
+
+public function filterByDate($id){
+    // Tangkap nilai yang dikirimkan dari form
+    $year = $this->input->post('year');
+    $month = $this->input->post('month');
+    $start_date = $this->input->post('start_date');
+    $end_date = $this->input->post('end_date');
+    
+    // Simpan nilai-nilai tersebut dalam session
+    $this->session->set_userdata('filter_year', $year);
+    $this->session->set_userdata('filter_month', $month);
+    $this->session->set_userdata('filter_start_date', $start_date);
+    $this->session->set_userdata('filter_end_date', $end_date);
+    
+    // Tangkap nilai id_anggota
+    $data['id_anggota'] = $id;
+    
+    // Ambil total simpanan pokok
+    $data['tot'] = $this->SimpananPokok_model->total_simpanan_pokok($id);
+    
+    // Periksa apakah rentang tanggal dipilih atau tidak
+    if (!empty($start_date) && !empty($end_date)) {
+        // Jika rentang tanggal dipilih, gunakan rentang tanggal
+        $data['simpanan_pokok'] = $this->SimpananPokok_model->filterByDateRange($id, $start_date, $end_date);
+        $data['total_simpanan_pokok'] = $this->SimpananPokok_model->calculateTotalByDateRange($id, $start_date, $end_date);
+    } else {
+        // Jika tidak, gunakan tahun dan bulan
+        $data['simpanan_pokok'] = $this->SimpananPokok_model->filterByDate($id, $year, $month);
+        $data['total_simpanan_pokok'] = $this->SimpananPokok_model->calculateTotalByDate($id, $year, $month);
     }
+    
+    // Load view dengan data yang diperlukan
+    $this->load->view("simpanan_pokok/detail_simpanan_pokok", $data);
+    
+    // Bersihkan session setelah halaman dimuat kembali atau berpindah halaman
+    $this->session->unset_userdata('filter_year');
+    $this->session->unset_userdata('filter_month');
+    $this->session->unset_userdata('filter_start_date');
+    $this->session->unset_userdata('filter_end_date');
+}
 
     public function add($id)
     {   
@@ -252,7 +296,7 @@ $write->save('php://output');
 
 	}
 
-public function export_detail(){
+    public function export_detail($id_anggota){
         // Load plugin PHPExcel nya
         include APPPATH.'third_party/PHPExcel/PHPExcel.php';
     
@@ -265,6 +309,7 @@ public function export_detail(){
             ->setSubject("Simpanan Pokok")
             ->setDescription("Laporan Simpanan Pokok")
             ->setKeywords("Data Simpanan Pokok");
+    
         // Buat sebuah variabel untuk menampung pengaturan style dari header tabel
         $style_col = array(
             'font' => array('bold' => true), // Set font nya jadi bold
@@ -279,123 +324,104 @@ public function export_detail(){
                 'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
             )
         );
-        // Buat sebuah variabel untuk menampung pengaturan style dari isi tabel
-        $style_row = array(
-            'alignment' => array(
-                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-            ),
-            'borders' => array(
-                'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-                'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-                'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-                'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-            )
-        );
-        $excel->setActiveSheetIndex(0)->setCellValue('A1', "DATA SIMPANAN POKOK KOPERASI DESA BEJI"); // Set kolom A1 dengan tulisan "DATA SISWA"
-        $excel->getActiveSheet()->mergeCells('A1:E1'); // Set Merge Cell pada kolom A1 sampai E1
-        $excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
-        $excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
-        $excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
-        // Buat header tabel nya pada baris ke 3
-        $excel->setActiveSheetIndex(0)->setCellValue('A3', "NO"); // Set kolom A3 dengan tulisan "NO"
-        $excel->setActiveSheetIndex(0)->setCellValue('B3', "NIA"); // Set kolom B3 dengan tulisan "NIS"
-        $excel->setActiveSheetIndex(0)->setCellValue('C3', "NAMA"); // Set kolom C3 dengan tulisan "NAMA"
-        $excel->setActiveSheetIndex(0)->setCellValue('D3', "JENIS KELAMIN"); // Set kolom D3 dengan tulisan "JENIS KELAMIN"
-        $excel->setActiveSheetIndex(0)->setCellValue('E3', "TANGGAL");
-        $excel->setActiveSheetIndex(0)->setCellValue('F3', "JUMLAH");
     
-        // Apply style header yang telah kita buat tadi ke masing-masing kolom header
-        $excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('B3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('C3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('D3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
+        // Set active sheet
+        $excel->setActiveSheetIndex(0);
     
-        // Panggil function view yang ada di Anggota_model untuk menampilkan semua data anggotanya
-        $anggota = $this->Anggota_model->getAll();
-        // Panggil function view yang ada di SimpananPokok_model untuk mendapatkan data simpanan pokok
-        $simpanan_pokok = $this->SimpananPokok_model->getAll(); 
+        // Panggil function view yang ada di Anggota_model untuk menampilkan data anggota
+        $anggota = $this->Anggota_model->getAnggotaById_export_detail($id_anggota);
     
-        // Lakukan penggabungan data anggota dengan data simpanan pokok berdasarkan ID anggota
-        $anggota_simpanan = array(); // Buat array kosong untuk menampung data anggota dan simpanan pokok
+        // Ambil nama anggota
+        $nama_anggota = '';
+        $nia_anggota = '';
         foreach ($anggota as $anggota_data) {
-            $anggota_simpanan[$anggota_data->id_anggota] = $anggota_data; // Masukkan data anggota ke dalam array dengan kunci ID anggota
+            $nama_anggota = $anggota_data->nama;
+            $nia_anggota = $anggota_data->nia;
+            break; // Ambil hanya satu data
         }
     
-        // Looping data simpanan pokok
-        foreach ($simpanan_pokok as $simpanan_data) {
-            // Pastikan ID anggota terdapat dalam data anggota dan simpanan pokok
-            if (isset($anggota_simpanan[$simpanan_data->id_anggota])) {
-                // Tambahkan jumlah dan tanggal dibayar dari data simpanan pokok ke dalam data anggota
-                $anggota_simpanan[$simpanan_data->id_anggota]->jumlah = $simpanan_data->jumlah;
-                $anggota_simpanan[$simpanan_data->id_anggota]->tanggal_dibayar = $simpanan_data->tanggal_dibayar;
-            }
-        }
+        // Tambahkan nama anggota di atas tabel
+// Tambahkan nama anggota di atas tabel
+$excel->getActiveSheet()->setCellValue('A1', 'Data Simpanan Pokok');
+$excel->getActiveSheet()->setCellValue('A2', 'Nama: ' . $nama_anggota);
+$excel->getActiveSheet()->setCellValue('A3', 'NIA: ' . $nia_anggota);
+
+// Gabungkan sel untuk kolom "Data Simpanan Pokok", "Nama", dan "NIA"
+$excel->getActiveSheet()->mergeCells('A1:C1'); // Data Simpanan Pokok
+$excel->getActiveSheet()->mergeCells('A2:C2'); // Nama
+$excel->getActiveSheet()->mergeCells('A3:C3'); // NIA
+
+// Set align horizontal dan vertical untuk teks "Data Simpanan Pokok", "Nama", dan "NIA"
+$alignment = $excel->getActiveSheet()->getStyle('A1:C3')->getAlignment();
+$alignment->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Pusatkan teks secara horizontal
+$alignment->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER); // Pusatkan teks secara vertikal
+
+// Beri gaya tebal untuk teks "Nama" dan "NIA"
+$excel->getActiveSheet()->getStyle('A2:C3')->getFont()->setBold(true);
+
+// Tambahkan spasi di bawah NIA
+$excel->getActiveSheet()->mergeCells('A4:C4'); // Gabungkan sel untuk spasi
+$excel->getActiveSheet()->getRowDimension(4)->setRowHeight(20); // Set tinggi baris untuk memberikan spasi
+
+// Tambahkan kolom kosong di antara "NIA" dan "No"
+// Insert satu kolom kosong sebelum kolom A
+
+// Buat header tabel pada baris ke 5
+$excel->getActiveSheet()->setCellValue('A5', 'No');
+$excel->getActiveSheet()->setCellValue('B5', 'Tanggal Dibayarkan');
+$excel->getActiveSheet()->setCellValue('C5', 'Jumlah');
+
+// Apply style header yang telah kita buat tadi ke masing-masing kolom header
+$excel->getActiveSheet()->getStyle('A5')->applyFromArray($style_col);
+$excel->getActiveSheet()->getStyle('B5')->applyFromArray($style_col);
+$excel->getActiveSheet()->getStyle('C5')->applyFromArray($style_col);
+
+$numrow = 6; // Set baris pertama untuk isi tabel adalah baris ke 6
+
+// Ambil data simpanan pokok berdasarkan ID anggota
+$simpanan_pokok = $this->SimpananPokok_model->detail_simpanan_pokok_export_detail($id_anggota); 
+
+// Looping data simpanan pokok
+foreach ($simpanan_pokok as $simpanan_data) {
+    // Set data dalam kolom
+    $excel->getActiveSheet()->setCellValue('A' . $numrow, $numrow - 5); // Nomor urut
+    $excel->getActiveSheet()->setCellValue('B' . $numrow, $simpanan_data->tanggal_dibayar); // Tanggal dibayarkan
+    $excel->getActiveSheet()->setCellValue('C' . $numrow, 'Rp ' . number_format($simpanan_data->jumlah, 0, ',', '.')); // Jumlah dengan format rupiah
+
+    // Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
+    $excel->getActiveSheet()->getStyle('A' . $numrow)->applyFromArray($style_col);
+    $excel->getActiveSheet()->getStyle('B' . $numrow)->applyFromArray($style_col);
+    $excel->getActiveSheet()->getStyle('C' . $numrow)->applyFromArray($style_col);
+
+    $numrow++; // Tambah 1 setiap kali looping
+}
+
     
-        $no = 1; // Untuk penomoran tabel, di awal set dengan 1
-        $numrow = 4; // Set baris pertama untuk isi tabel adalah baris ke 4
-        foreach($anggota_simpanan as $data){ // Lakukan looping pada variabel anggota
-            $excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
-            $excel->setActiveSheetIndex(0)->setCellValueExplicit('B'.$numrow, $data->nia, PHPExcel_Cell_DataType::TYPE_STRING); // Set kolom B sebagai teks eksplisit
-            $excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data->nama);
-            $excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data->jenis_kelamin);
-        
-            $tanggal_dibayar = isset($data->tanggal_dibayar) ? $data->tanggal_dibayar : '';
-            // Pastikan properti jumlah dan tanggal_dibayar ada sebelum mengaksesnya
-            $jumlah = isset($data->jumlah) ? $data->jumlah : '';
-            
-            $excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $tanggal_dibayar);
-            $excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $jumlah);
-            
-        
-            // Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
-            $excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
-        
-            $no++; // Tambah 1 setiap kali looping
-            $numrow++; // Tambah 1 setiap kali looping
-        }
-        
+        // Hitung total jumlah simpanan pokok
+        $total_jumlah = array_sum(array_column($simpanan_pokok, 'jumlah'));
     
-        // Hitung jumlah simpanan pokok
-        $total_simpanan_pokok = $this->SimpananPokok_model->total_simpanan_pokok_per_anggota();
-        
-        // Format jumlah simpanan pokok menjadi format Rupiah
-        $total_simpanan_pokok_rp = 'Rp ' . number_format($total_simpanan_pokok, 0, ',', '.');        
+        // Tambahkan total simpanan pokok di bawah tabel
+        $numrow += 1;
+        $excel->getActiveSheet()->setCellValue('A' . $numrow, 'Total Simpanan Pokok');
+        $excel->getActiveSheet()->mergeCells('A' . $numrow . ':B' . $numrow); // Gabungkan sel untuk total
+        $excel->getActiveSheet()->setCellValue('C' . $numrow, 'Rp ' . number_format($total_jumlah, 0, ',', '.')); // Total dengan format rupiah
     
-        // Menambahkan jumlah simpanan pokok di bawah data anggota terakhir
-        $excel->getActiveSheet()->mergeCells('A'.$numrow.':D'.$numrow); // Merge cells untuk kolom A hingga D pada baris ke-$numrow
-        $excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, 'Jumlah Simpanan Pokok Seluruh Anggota'); // Set nilai pada kolom A baris ke-$numrow
-    
-        // Set nilai pada kolom E baris ke-$numrow dengan format Rupiah dan alignment horizontal ke kanan
-        $excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $total_simpanan_pokok_rp); // Set nilai pada kolom E baris ke-$numrow dengan format Rupiah
-        $excel->getActiveSheet()->getStyle('F'.$numrow)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT); // Set alignment horizontal ke kanan
-    
-        // Apply style yang telah kita buat ke baris jumlah simpanan pokok
-        $excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
-        $excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
-        $excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
-        $excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
-        $excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
-        $excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
+        // Apply style row yang telah kita buat tadi ke masing-masing baris (total)
+        $excel->getActiveSheet()->getStyle('A' . $numrow)->applyFromArray($style_col);
+        $excel->getActiveSheet()->getStyle('B' . $numrow)->applyFromArray($style_col);
+        $excel->getActiveSheet()->getStyle('C' . $numrow)->applyFromArray($style_col);
     
         // Set width kolom
         $excel->getActiveSheet()->getColumnDimension('A')->setWidth(5); // Set width kolom A
-        $excel->getActiveSheet()->getColumnDimension('B')->setWidth(15); // Set width kolom B
-        $excel->getActiveSheet()->getColumnDimension('C')->setWidth(25); // Set width kolom C
-        $excel->getActiveSheet()->getColumnDimension('D')->setWidth(20); // Set width kolom D
-        $excel->getActiveSheet()->getColumnDimension('E')->setWidth(30); // Set width kolom E
-        $excel->getActiveSheet()->getColumnDimension('F')->setWidth(30); // Set width kolom F
+        $excel->getActiveSheet()->getColumnDimension('B')->setWidth(20); // Set width kolom B
+        $excel->getActiveSheet()->getColumnDimension('C')->setWidth(20); // Set width kolom C
     
         // Set height semua kolom menjadi auto (mengikuti height isi dari kolommnya, jadi otomatis)
         $excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(-1);
+    
         // Set orientasi kertas jadi LANDSCAPE
         $excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+    
         // Set judul file excel nya
         $excel->getActiveSheet(0)->setTitle("Laporan Data Simpanan Pokok");
         $excel->setActiveSheetIndex(0);
@@ -407,6 +433,9 @@ public function export_detail(){
         $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
     }
+    
+    
+    
 
     public function export_pdf() {
     // Load library TCPDF
@@ -458,10 +487,10 @@ foreach ($anggota as $value) {
     // Periksa apakah kunci ada dalam array
     if (array_key_exists($value->id_anggota, $total_simpanan_pokok_per_anggota)) {
         // Jika ada, tampilkan nilai total simpanan pokok
-        $html .= '<td style="text-align:center">' . 'Rp ' . number_format($total_simpanan_pokok_per_anggota[$value->id_anggota], 0, ',', '.') . '</td>';
+        $html .= '<td> ' .  'Rp ' . number_format($total_simpanan_pokok_per_anggota[$value->id_anggota], 0, ',', '.') . '</td>';
     } else {
         // Jika tidak, tampilkan teks kosong
-        $html .= '<td style="text-align:center"></td>';
+        $html .= '<td></td>';
     }
     
     $html .= '</tr>';
@@ -472,9 +501,8 @@ foreach ($anggota as $value) {
     $total_simpanan_pokok_all = $this->SimpananPokok_model->total_simpanan_pokok_all();
     $total_simpanan_pokok_all_rp = 'Rp ' . number_format($total_simpanan_pokok_all, 0, ',', '.');
     $html .= '<tr>';
-    $html .= '<td colspan="4"></td>'; // Kolom kosong untuk memisahkan total simpanan pokok seluruh anggota
-    $html .= '<td style="text-align:center; font-weight:bold">Total Simpanan Pokok</td>';
-    $html .= '<td style="text-align:center">' . $total_simpanan_pokok_all_rp . '</td>';
+    $html .= '<td colspan="5" style="text-align:center; font-weight:bold">Total Simpanan Pokok</td>'; // Gabung kolom 0-4
+    $html .= '<td colspan="5" style="text-align:center">' . $total_simpanan_pokok_all_rp . '</td>'; // Tetap di posisinya sekarang, di bawah kolom "Simpanan Pokok"
     $html .= '</tr>';
 
     $html .= '</table>';
@@ -486,6 +514,71 @@ foreach ($anggota as $value) {
 
     // Close and output PDF document
     $pdf->Output('data_simpanan_pokok.pdf', 'I');
+}
+
+public function export_detail_pdf($id_anggota) {
+    // Load library TCPDF
+    $this->load->library('tcpdf/tcpdf');
+
+    // Create new PDF document
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    // Set document information
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetTitle('Data Simpanan Pokok');
+    $pdf->SetHeaderData('', '', 'Koperasi Desa Beji', '');
+
+    // Add a page
+    $pdf->AddPage();
+    
+    // Get data anggota
+    $anggota = $this->Anggota_model->getAnggotaById_export_detail($id_anggota);
+
+    if ($anggota) {
+        foreach ($anggota as $anggota_item) {
+            // Set some content to display
+            $html = '<h1 style="text-align:center">Data Simpanan Pokok</h1>';
+            $html .= '<p style="text-align:center; font-weight:bold">Nama: ' . $anggota_item->nama . '</p>';
+            $html .= '<p style="text-align:center; font-weight:bold">NIA: ' . $anggota_item->nia . '</p>';
+            $html .= '<table border="1">';
+            $html .= '<tr>';
+            $html .= '<th style="text-align:center">No</th>';
+            $html .= '<th style="text-align:center">Tanggal Dibayarkan</th>';
+            $html .= '<th style="text-align:center">Jumlah</th>'; // Tambahkan kolom untuk simpanan pokok
+            $html .= '</tr>';
+            $no = 1;
+
+            // Fetch simpanan pokok data for the current anggota
+            $simpanan_pokok = $this->SimpananPokok_model->detail_simpanan_pokok_export_detail($anggota_item->id_anggota);
+
+            // Iterate through each simpanan pokok data
+            foreach ($simpanan_pokok as $pokok) {
+                // Set nomor urut
+                $html .= '<tr>';
+                $html .= '<td style="text-align:center">' . $no++ . '</td>';
+                $html .= '<td style="text-align:center">' . $pokok->tanggal_dibayar . '</td>';
+                $html .= '<td> Rp ' . number_format($pokok->jumlah, 0, ',', '.') . '</td>'; // Format jumlah sebagai mata uang rupiah
+                $html .= '</tr>';
+            }
+
+            // Calculate and display total jumlah
+            $total_jumlah = array_sum(array_column($simpanan_pokok, 'jumlah'));
+            $html .= '<tr>';
+            $html .= '<td colspan="2" style="text-align:center; font-weight:bold">Total Simpanan Pokok</td>';
+            $html .= '<td style="text-align:center; font-weight:bold">Rp ' . number_format($total_jumlah, 0, ',', '.') . '</td>';
+            $html .= '</tr>';
+
+            $html .= '</table>';
+
+            $pdf->SetY(25);
+
+            // Write HTML content to PDF
+            $pdf->writeHTML($html, true, false, true, false, '');
+
+            // Close and output PDF document
+            $pdf->Output('data_simpanan_pokok.pdf', 'I');
+        }
+    }
 }
 
     

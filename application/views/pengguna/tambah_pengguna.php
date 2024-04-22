@@ -55,8 +55,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                       <?php echo form_error('password') ?>
                     </div>
                     <small id="passwordHelp" class="form-text text-muted">
-    <span style="color: #28a745;">✓</span> Password harus terdiri dari minimal 8 karakter <br>
-    <span style="color: #28a745;">✓</span> Setidaknya satu huruf besar, satu huruf kecil, satu angka, dan satu karakter spesial.
+    <span style="color: #28a745;">✓</span> Password harus terdiri dari minimal 5 karakter <br>
+    <span style="color: #28a745;">✓</span> Setidaknya ada satu huruf dan satu angka
 </small>
                   </div>
                

@@ -51,19 +51,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
               <input type="hidden" name="id_user" value="<?php echo $pengguna->id_user?>" />
               <div class="box-body">
               <div class="form-group">
-              <label><i class="fas fa-key"></i> Ubah Password</label>
-                    <input name="password" class="form-control <?php echo form_error('password') ? 'is-invalid':'' ?>" placeholder="Masukkan Password"type="text">
+              <label>Nama</label>
+                    <input name="nama" class="form-control <?php echo form_error('nama') ? 'is-invalid':'' ?>" value="<?php echo $pengguna->nama?>" type="text" readonly/>
                     <div class="invalid-feedback">
-                      <?php echo form_error('password') ?>
-                    </div>
-                    <small id="passwordHelp" class="form-text text-muted">
-    <span style="color: #28a745;">✓</span> Password harus terdiri dari minimal 8 karakter <br>
-    <span style="color: #28a745;">✓</span> Setidaknya satu huruf besar, satu huruf kecil, satu angka, dan satu karakter spesial.
-</small>
-                  </div>
-               
+                      <?php echo form_error('nama') ?>
+                    </div> <br>
+                    <div class="form-group">
+    <label><i class="fa fa-key"></i> Password Baru</label>
+    <input name="password" class="form-control <?php echo form_error('password') ? 'is-invalid':'' ?>" placeholder="Masukkan Password Baru" type="password">
+    
+    <div class="invalid-feedback">
+        <?php echo form_error('password') ?>
+    </div>
+    <small id="passwordHelp" class="form-text text-muted">
+        <span style="color: #28a745;">✓</span> Password harus terdiri dari minimal 5 karakter <br>
+        <span style="color: #28a745;">✓</span> Setidaknya ada satu huruf dan satu angka.
+    </small>
+</div>
 
-              </div>
+<div class="form-group">
+    <label><i class="fa fa-key"></i> Konfirmasi Password</label>
+    <input name="confirm_password" class="form-control <?php echo form_error('confirm_password') ? 'is-invalid':'' ?>" placeholder="Konfirmasi Password" type="password">
+    <div class="invalid-feedback">
+        <?php echo form_error('confirm_password') ?>
+    </div>
+    <small id="passwordHelp" class="form-text text-muted">
+        <span style="color: #28a745;">✓</span> Pastikan sama dengan password baru
+    </small>
+</div>
+
               <!-- /.box-body -->
 
               <div class="box-footer">

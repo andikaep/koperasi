@@ -58,6 +58,7 @@
                  <a href="<?php echo base_url("simpanan_pokok/export_pdf"); ?>" class="btn btn-ijo"><i class="fa fa-fw fa-file-pdf-o"></i>Export PDF</a>
                 </div>
               <!-- /.box-header -->
+
               <div class="box-body table-responsive">
                 <table id="customTable" class="table table-bordered table-hover">
                   <thead>
