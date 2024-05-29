@@ -76,6 +76,16 @@ class Pengguna_model extends CI_Model
         $this->db->where('id_user', $id);
         $this->db->update('user', $data); // Untuk mengeksekusi perintah update data
     }
+
+	public function reset_password($id, $new_password){
+		$data = array(
+			"password" => password_hash($new_password, PASSWORD_DEFAULT)
+		);
+	
+		$this->db->where('id_user', $id);
+		$this->db->update('user', $data); // Untuk mengeksekusi perintah update data
+	}
+	
     
 
 	// Fungsi untuk melakukan menghapus data siswa berdasarkan NIS siswa

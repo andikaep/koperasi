@@ -54,7 +54,16 @@ class Pinjaman_model extends CI_Model
 		$query = $this->db->get('pinjaman');
 		$result = $query->row_array();
 		return $result['jumlah_pinjaman'];
-	}	
+	}
+
+	public function getTotalPinjaman() {
+		// Ambil total jumlah pinjaman dari tabel pinjaman
+		$this->db->select_sum('jumlah_pinjaman');
+		$query = $this->db->get('pinjaman');
+		$result = $query->row_array();
+		return $result['jumlah_pinjaman'];
+	}
+	
 
 	public function getPinjamanByIdAnggota($id_anggota) {
         $this->db->where('id_anggota', $id_anggota);

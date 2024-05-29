@@ -7,7 +7,57 @@
     <?php $this->load->view("admin/_includes/header.php") ?>
     <?php $this->load->view("admin/_includes/sidebar.php") ?>
     <script src="<?php echo base_url('js/custom_table.js'); ?>"></script>
+    <style>
+      .btn.btn-carot {
+    position: relative;
+    margin-right: 10px; /* Memberikan jarak 10px antara tombol */
+    overflow: hidden;
+    transition: box-shadow 0.1s ease;
+}
 
+.btn.btn-carot:hover {
+    box-shadow: 0 0 10px 3px rgba(255, 0, 0, 0.5); /* Efek bayangan merah yang lebih lembut saat dihover */
+}
+
+.btn.btn-ijo {
+    position: relative;
+    margin-right: 10px; /* Memberikan jarak 10px antara tombol */
+    overflow: hidden;
+    transition: box-shadow 0.0s ease;
+}
+
+.btn.btn-ijo:hover {
+    box-shadow: 0 0 20px 6px rgba(0, 255, 0, 0.5); /* Efek bayangan hijau yang sama jelasnya dengan merah saat dihover */
+}
+
+.member-info {
+        background-color: #e5e5e5;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+    .member-info h4 {
+        margin-bottom: 5px;
+    }
+
+    .member-info h4 span {
+    display: inline-block; /* Change to inline-block */
+    font-weight: bold;
+    color: #333;
+    transition: transform 0.3s ease;
+}
+
+.member-info:hover h4 span {
+    transform: translateX(10px);
+}
+    .member-info:hover {
+    background-color: #d8d8d8;
+}
+      </style>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -59,27 +109,21 @@
               <div class="box-header">
                 <h3 class="label label-primary" style="font-size: 12px, margin-right: -20px !important;">--- Detail Simpanan Pokok ---</h3>
               </div>
-              <div class="box-header">
-                 <a href="<?php echo base_url("simpanan_pokok/export_detail/$id_anggota"); ?>" class="btn btn-carot"><i class="fa fa-fw fa-file-excel-o"></i>Export Excel</a>
-                 <a href="<?php echo base_url("simpanan_pokok/export_detail_pdf/$id_anggota"); ?>" class="btn btn-ijo"><i class="fa fa-fw fa-file-pdf-o"></i>Export PDF</a>
-
-              </div>
-           <?php if (!empty($simpanan_pokok)) : ?>
-    <?php $nama = $simpanan_pokok[0]->nama; ?>
-    <?php $nia = $simpanan_pokok[0]->nia; ?>
-    <div style="position: relative; margin-top: 20px; text-align: center;">
-        <h4 style="font-family: 'Montserrat', sans-serif; font-size: 28px; color: #2c3e50; letter-spacing: 1px; position: absolute; width: 100%; top: -90px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
-            Nama: <?php echo $nama; ?>
-        </h4>
-        <h4 style="font-family: 'Montserrat', sans-serif; font-size: 22px; color: #2c3e50; letter-spacing: 1px; position: absolute; width: 100%; top: -50px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
-            NIA: <?php echo $nia; ?>
-        </h4>
+              <?php if (!empty($simpanan_pokok)) : ?>
+    <div class="member-info">
+        <h4>Nama: <span><?php echo $simpanan_pokok[0]->nama; ?></span></h4>
+        <h4>NIA: <span><?php echo $simpanan_pokok[0]->nia; ?></span></h4>
     </div>
 <?php endif; ?>
 
+              <div class="box-header"  style="margin-bottom: 10px;">
+                 <a href="<?php echo base_url("simpanan_pokok/export_detail/$id_anggota"); ?>?year=<?php echo $this->session->userdata('filter_year'); ?>&month=<?php echo $this->session->userdata('filter_month'); ?>&start_date=<?php echo $this->session->userdata('filter_start_date'); ?>&end_date=<?php echo $this->session->userdata('filter_end_date'); ?>" class="btn btn-carot"><i class="fa fa-fw fa-file-excel-o"></i>Export Excel</a>
+                 <a href="<?php echo base_url("simpanan_pokok/export_detail_pdf/$id_anggota"); ?>?year=<?php echo $this->session->userdata('filter_year'); ?>&month=<?php echo $this->session->userdata('filter_month'); ?>&start_date=<?php echo $this->session->userdata('filter_start_date'); ?>&end_date=<?php echo $this->session->userdata('filter_end_date'); ?>" class="btn btn-ijo"><i class="fa fa-fw fa-file-pdf-o"></i>Export PDF</a>
+
+              </div>
 <div class="row">
     <div class="col-md-6">
-        <form method="post" action="<?php echo base_url("simpanan_pokok/filterByDate/$id_anggota"); ?>">
+        <form method="post" action="<?php echo base_url("simpanan_pokok/filter_detail/$id_anggota"); ?>">
             <div class="form-group">
                 <label for="year">Tahun:</label>
                 <select class="form-control" id="year" name="year" required>
@@ -90,20 +134,37 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="month">Bulan:</label>
-                <select class="form-control" id="month" name="month">
-                    <option value="" <?php echo ($this->session->userdata('filter_month') == '') ? 'selected' : ''; ?>>Semua Bulan</option>
-                    <?php for ($m = 1; $m <= 12; $m++) { ?>
-                        <option value="<?php echo $m; ?>" <?php echo ($this->session->userdata('filter_month') == $m) ? 'selected' : ''; ?>><?php echo date('F', mktime(0, 0, 0, $m, 1)); ?></option>
-                    <?php } ?>
-                </select>
-            </div>
+    <label for="month">Bulan:</label>
+    <select class="form-control" id="month" name="month">
+        <option value="" <?php echo ($this->session->userdata('filter_month') == '') ? 'selected' : ''; ?>>Semua Bulan</option>
+        <?php 
+        $bulan = array(
+            1 => 'Januari', 
+            2 => 'Februari', 
+            3 => 'Maret', 
+            4 => 'April', 
+            5 => 'Mei', 
+            6 => 'Juni', 
+            7 => 'Juli', 
+            8 => 'Agustus', 
+            9 => 'September', 
+            10 => 'Oktober', 
+            11 => 'November', 
+            12 => 'Desember'
+        );
+        ?>
+        <?php for ($m = 1; $m <= 12; $m++) { ?>
+            <option value="<?php echo $m; ?>" <?php echo ($this->session->userdata('filter_month') == $m) ? 'selected' : ''; ?>><?php echo $bulan[$m]; ?></option>
+        <?php } ?>
+    </select>
+</div>
+
             <button type="submit" class="btn btn-primary">Filter</button>
         </form>
     </div>
     <div class="col-md-6">
-        <form method="post" action="<?php echo base_url("simpanan_pokok/filterByDate/$id_anggota"); ?>">
-            <div class="form-group" style="width: 150px;">
+        <form method="post" action="<?php echo base_url("simpanan_pokok/filter_detail/$id_anggota"); ?>">
+            <div class="form-group">
                 <label for="start_date">Tanggal Mulai:</label>
                 <input type="date" class="form-control" id="start_date" name="start_date" required value="<?php echo $this->session->userdata('filter_start_date'); ?>">
             </div>
@@ -210,7 +271,7 @@ $(document).ready(function(){
         // Kirim permintaan AJAX
         $.ajax({
             type: 'POST',
-            url: '<?php echo base_url("simpanan_pokok/filterByDate/$id_anggota"); ?>',
+            url: '<?php echo base_url("simpanan_pokok/filter_detail/$id_anggota"); ?>',
             data: formData,
             success: function(response){
                 // Perbarui bagian tabel dengan data yang diterima

@@ -16,7 +16,28 @@
 
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
-          
+        <?php
+$nama_hari = array(
+    'Sunday' => 'Minggu',
+    'Monday' => 'Senin',
+    'Tuesday' => 'Selasa',
+    'Wednesday' => 'Rabu',
+    'Thursday' => 'Kamis',
+    'Friday' => 'Jumat',
+    'Saturday' => 'Sabtu'
+);
+
+$hari = date('l', strtotime('+7 hours')); // Dapatkan nama hari saat ini
+$hari_indonesia = $nama_hari[$hari]; // Terjemahkan nama hari ke bahasa Indonesia
+
+?>
+<style>
+  .dropdown-menu {
+    padding: 0;
+}
+
+  </style>
+
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -30,7 +51,8 @@
 
                 <p>
                 <?php echo $this->session->userdata('nama'); ?>
-                  <small>Admin sejak 2024</small>
+                  <!-- <small>Admin sejak 2024</small> -->
+                  <small><?php echo $hari_indonesia . ", " . date("d/m/Y - H:i:s", strtotime("+7 hours")); // Waktu Indonesia Barat ?></small>
                 </p>
               </li>
               <!-- Menu Footer-->

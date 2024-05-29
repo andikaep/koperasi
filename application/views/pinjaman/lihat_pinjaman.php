@@ -66,10 +66,12 @@
                       <th>No</th>
                       <th>Nama Peminjam</th>
                       <th>No Pinjaman</th>
-                      <th>Jumlah Pinjaman</th>
                       <th>Tanggal Peminjaman</th>
-                      <th>Lama</th>
-                      <th>Total Bunga</th>
+                      <th>Jumlah Pinjaman</th>
+                      <th>Tenor</th>
+                      <th>Bunga</th>
+                      <th>Total Bayar</th>
+                      <th>Total Angsuran</th>
                       <th>Status</th>
                       <th>Kurang</th>
                       <th>Aksi</th>
@@ -93,13 +95,16 @@
                       <tr>
                         <td><?php cetak($no++) ?></td>
                          <td><?php cetak($value->nama)  ?></td>
+                         
                         <td><?php cetak($value->no_pinjaman)  ?></td>
-                        <td><?php echo "Rp. " . (number_format($value->jumlah_pinjaman,2,',','.')) ?></td>
                         <td><?php cetak($value->tanggal_peminjaman)  ?></td>
+                        <td><?php echo "Rp. " . (number_format($value->jumlah_pinjaman,0,',','.')) ?></td>
                         <td><?php cetak($value->lama)  ?></td>
                         <td><?php echo cetak($value->bunga) . '%' ?></td>
+                        <td><strong><?php echo "Rp. " . number_format($total_yang_harus_dibayarkan, 0, ',', '.'); ?></strong></td>
+                        <td><strong><?php echo "Rp. " . number_format($total_angsuran_dibayarkan, 0, ',', '.'); ?></strong></td>
                         <td><strong><?php echo $status_pinjaman; ?></strong></td> <!-- Tampilkan status pinjaman -->
-                        <td><strong><?php echo "Rp. " . number_format($kurang, 2, ',', '.'); ?></strong></td>
+                        <td><strong><?php echo "Rp. " . number_format($kurang, 0, ',', '.'); ?></strong></td>
                         <td>
                           <a class="btn btn-ref" href="<?php echo site_url('pinjaman/edit/'.$value->id_pinjaman) ?>"><i class="fa fa-fw fa-edit"></i></a>
                           <a href="#!" onclick="deleteConfirm('<?php echo site_url('pinjaman/delete/'.$value->id_pinjaman) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i></a>
@@ -121,6 +126,52 @@
                     </tr>
                   </tfoot> -->
                 </table>
+              <!--   <div class="box-header">
+                <?php if (!empty($total_pinjaman)): ?>
+    <div class="box-header">
+        <h2 class="label label-success"> Total Pinjaman : <?php echo "Rp. " . (number_format($total_pinjaman, 0, ',', '.')) ?></h2>
+        <button class="btn btn-default pull-right" type="button" onclick="window.history.back();">
+            <i class="fa fa-fw fa-arrow-left"></i>Kembali
+        </button>
+    </div>
+<?php endif; ?>
+
+<?php if (!empty($pinjaman)): ?>
+    <?php
+    // Inisialisasi variabel untuk menyimpan total bayar dari semua pinjaman
+    $total_bayar_semua = 0;
+    ?>
+    <?php foreach ($pinjaman as $value): ?>
+        <?php 
+            // Hitung total yang harus dibayarkan
+            $total_yang_harus_dibayarkan = $value->jumlah_pinjaman + ($value->jumlah_pinjaman / 100 * $value->bunga);
+            
+            // Akumulasikan total bayar dari semua pinjaman
+            $total_bayar_semua += $total_yang_harus_dibayarkan;
+        ?>
+    <?php endforeach; ?>
+
+    <div class="box-header">
+        <h2 class="label label-success"> Total Bayar : <?php echo "Rp. " . (number_format($total_bayar_semua, 0, ',', '.')) ?></h2>
+    </div>
+<?php endif; ?> -->
+
+<div class="box-header">
+    <?php if (!empty($total_pinjaman)): ?>
+        <div class="box-header">
+            <h2 class="label label-success" style="font-size: 18px; margin-right: 10px;"> Total Pinjaman : <?php echo "Rp. " . (number_format($total_pinjaman, 0, ',', '.')) ?></h2>
+            <h2 class="label label-success" style="font-size: 18px; margin-right: 10px;"> Total Bayar : <?php echo "Rp. " . (number_format($total_bayar_semua, 0, ',', '.')) ?></h2>
+            <h2 class="label label-success" style="font-size: 18px; margin-right: 10px;"> Keuntungan : <?php echo "Rp. " . (number_format($total_bayar_semua - $total_pinjaman, 0, ',', '.')) ?></h2>
+            <button class="btn btn-default pull-right" type="button" onclick="window.history.back();">
+                <i class="fa fa-fw fa-arrow-left"></i>Kembali
+            </button>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+
+
             </div>
             <!-- Tabel detail simpanan pokok -->
 

@@ -39,7 +39,7 @@
       <section class="content-header">
         <h1>
           Kelola
-          <small>Data Anggota Koperasi</small>
+          <small>Data Angsuran</small>
         </h1>
         <ol class="breadcrumb">
           <li><a href="#"><i class="fa fa-fw fa-child"></i> Anggota</a></li>
@@ -58,26 +58,32 @@
               <div class="box-header">
               <h3 class="label label-primary" style="font-size: 12px; margin-right: -20px !important;">Detail Angsuran</h3>
     <!-- Tampilkan nama peminjam -->
-    <?php if (!empty($angsuran_detail)): ?>
-    <h4><strong><span style="color: blue;"><?php echo $angsuran_detail[0]->nama; ?></span></strong></h4>
-    <h4>No Pinjaman: <strong><?php echo $angsuran_detail[0]->no_pinjaman; ?></strong></h4>
-    <?php else: ?>
-    <h4>Data tidak ditemukan</h4>
+<?php if (!empty($angsuran_detail)): ?>
+    <div style="background-color: #f4f4f4; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+        <h4 style="color: #333; margin-bottom: 5px;"><strong>Nama Peminjam:</strong> <span style="color: blue;"><?php echo $angsuran_detail[0]->nama; ?></span></h4>
+        <h4 style="color: #333; margin-bottom: 5px;"><strong>No Pinjaman:</strong> <?php echo $angsuran_detail[0]->no_pinjaman; ?></h4>
+        <h4 style="color: #333; margin-bottom: 5px;"><strong>Jumlah Pinjaman:</strong> <?php echo $angsuran_detail[0]->jumlah_pinjaman; ?></h4>
+        <h4 style="color: #333; margin-bottom: 5px;"><strong>Bunga:</strong> <?php echo $angsuran_detail[0]->bunga; '%' ?></h4>
+        
+    </div>
+<?php else: ?>
+    <div style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">
+        <h4 style="color: #333;">Data tidak ditemukan</h4>
+    </div>
 <?php endif; ?>
+
               </div>
                  <table id="customTable" class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>No</th>
-                      <th>Nama Peminjam</th>
-                      <th>No Pinjaman</th>
                       <th>No Angsuran</th>
-                      <th>Tanggal Peminjaman</th>
+                      <th>Tanggal Bayar Angsuran</th>
                       <th>Jumlah Pinjaman</th>
                       <th>Bunga</th>
                       <th>Total Bayar</th>
-                      <th>Jumlah Angsuran</th>
-                      <th>Kurang Bayar</th>
+                      <th>Angsuran</th>
+                      <!-- <th>Kurang Bayar</th> -->
                       <th>Aksi</th>
                     </tr>
                   </thead>
@@ -101,15 +107,14 @@
                       
     <tr>
                         <td><?php cetak($no++) ?></td>
-                         <td><?php cetak($value->nama)  ?></td>
-                        <td><?php cetak($value->no_pinjaman)  ?></td>
+                        
                         <td><?php cetak($value->no_angsuran)  ?></td>
-                        <td><?php cetak($value->tanggal_peminjaman)  ?></td>
-                        <td><?php echo "Rp. " . (number_format($value->jumlah_pinjaman,2,',','.')) ?></td>
+                        <td><?php cetak($value->tanggal)  ?></td>
+                        <td><?php echo "Rp. " . (number_format($value->jumlah_pinjaman,0,',','.')) ?></td>
                         <td><?php echo cetak($value->bunga) . '%' ?></td>
-                        <td><?php echo "Rp. " . number_format($total_pinjaman_bunga, 2, ',', '.'); ?></td>
-                        <td><?php echo "Rp. " . (number_format($value->jumlah_angsuran,2,',','.')) ?></td>
-                        <td><strong><?php echo "Rp. " . number_format($kurang, 2, ',', '.'); ?></strong></td>
+                        <td><?php echo "Rp. " . number_format($total_pinjaman_bunga, 0, ',', '.'); ?></td>
+                        <td><?php echo "Rp. " . (number_format($value->jumlah_angsuran,0,',','.')) ?></td>
+                        <!-- <td><strong><?php echo "Rp. " . number_format($kurang, 0, ',', '.'); ?></strong></td> -->
                         <td>
                           <a class="btn btn-ref" href="<?php echo site_url('angsuran/edit/'.$value->id_angsuran) ?>"><i class="fa fa-fw fa-edit"></i></a><br><br>
                           <a href="#!" onclick="deleteConfirm('<?php echo site_url('angsuran/delete/'.$value->id_angsuran) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i></a>
@@ -119,9 +124,14 @@
                   </tbody>
                 </table>
                 <div class="box-header">
-                  <?php foreach ($tot as $value): ?>
-                  <h3 class="label label-success"> Total Angsuran : <?php echo "Rp. " . (number_format($value->jumlah_angsuran,2,',','.')) ?></h3>
-                  <?php endforeach; ?>
+                <?php foreach ($tot as $value): ?>
+    <h2 class="label label-success" style="font-size: 18px; margin-right: 10px;"> Total Angsuran : <?php echo "Rp. " . (number_format($value->jumlah_angsuran, 0, ',', '.')) ?></h2>
+<?php endforeach; ?>
+
+<?php foreach ($tot as $value): ?>
+    <h2 class="label label-success" style="font-size: 18px; margin-bottom: 10px;"> Kurang Bayar : <?php echo "Rp. " . (number_format($kurang, 0, ',', '.')) ?></h2>
+<?php endforeach; ?>
+
                   <button class="btn btn-default pull-right" type="button" onclick="window.history.back();">
   <i class="fa fa-fw fa-arrow-left"></i>Kembali
 </button>

@@ -76,6 +76,8 @@
         </li>
         <li><a href="<?php echo base_url('calculator') ?>"><i class="fa fa-fw fa-calculator"></i> <span>Kalkulator</span></a>
         </li>
+        <li><a href="<?php echo base_url('dashboard/petunjuk') ?>"><i class="fa fa-folder-open-o" aria-hidden="true"></i> <span>Petunjuk</span></a>
+        </li>
       </ul>
     </section>
     <!-- /.sidebar -->

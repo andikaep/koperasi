@@ -78,7 +78,7 @@
                       <th>Nama</th>
                       <th>No Pinjaman</th>
                       <th>Jumlah Pinjaman</th>
-                      <th>Aksi</th>
+                
                     </tr>
                   </thead>
                   <tbody>
@@ -90,11 +90,11 @@
                         <td><?php cetak($nilai->no_pinjaman)  ?></td>
                         
                         <td><?php echo "Rp. " . (number_format($nilai->jumlah_pinjaman,2,',','.')) ?></td>
-                        <td>
+                        <!-- <td>
                           <a class="btn btn-ref" href="<?php echo site_url('pinjaman/edit/'.$nilai->id_pinjaman) ?>"><i class="fa fa-fw fa-edit"></i></a>
                           <a href="#!" onclick="deleteConfirm('<?php echo site_url('pinjaman/delete/'.$nilai->id_pinjaman) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i></a>
                           
-                        </td>
+                        </td> -->
                       </tr>
                     <?php endforeach; ?>
                   </tbody>
@@ -103,7 +103,64 @@
               </div>
 
               
-           
+              <div class="box-body table-responsive">
+              <div class="box-header">
+                <h3 class="label label-primary" style="font-size: 12px, margin-right: -20px !important;">--- Detail Angsuran ---</h3>
+              </div>
+              <table id="angsuranTable" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                      <th>No</th>
+                      <th>Nama</th>
+                      <th>No Pinjaman</th>
+                      <th>No Angsuran</th>
+                      <th>Tanggal Angsuran</th>
+                      <th>Jumlah Pinjaman</th>
+                      <th>Bunga</th>
+                      <th>Total Bayar</th>
+                      <th>Jumlah Angsuran</th>
+                      <th>Kurang Bayar</th>
+                   
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php $no = 1;?>
+                    <?php foreach ($angsuran as $nilai): ?>
+                      <?php 
+    // Hitung total angsuran yang telah dibayarkan untuk pinjaman ini
+    $total_angsuran_dibayarkan = $this->db->query("SELECT SUM(jumlah_angsuran) AS total_angsuran FROM angsuran WHERE id_pinjaman = '{$nilai->id_pinjaman}'")->row()->total_angsuran;
+    
+    // Tentukan total yang seharusnya dibayarkan
+    $total_yang_harus_dibayarkan = $nilai->jumlah_pinjaman + ($nilai->jumlah_pinjaman * $nilai->bunga / 100);
+    
+    // Hitung nilai kurang untuk angsuran ini
+    $kurang = $total_yang_harus_dibayarkan - $total_angsuran_dibayarkan;
+
+    $total_pinjaman_bunga = $nilai->jumlah_pinjaman + ($nilai->jumlah_pinjaman * $nilai->bunga / 100);
+
+    ?>
+                      <tr>
+                        <td><?php cetak($no++) ?></td>
+                        <td><?php cetak($nilai->nama) ?></td>
+                        <td><?php cetak($nilai->no_pinjaman)  ?></td>
+                        <td><?php cetak($nilai->no_angsuran)  ?></td>
+                        <td><?php cetak($nilai->tanggal)  ?></td>
+                        <td><?php echo "Rp. " . (number_format($nilai->jumlah_pinjaman,2,',','.')) ?></td>
+                        <td><?php echo cetak($nilai->bunga) . '%' ?></td>
+                        <td><?php echo "Rp. " . number_format($total_pinjaman_bunga, 2, ',', '.'); ?></td>
+                        <td><?php echo "Rp. " . (number_format($nilai->jumlah_angsuran,2,',','.')) ?></td>
+                        <td><strong><?php echo "Rp. " . number_format($kurang, 2, ',', '.'); ?></strong></td>
+                        <!-- <td>
+                          <a class="btn btn-ref" href="<?php echo site_url('angsuran/edit/'.$nilai->id_pinjaman) ?>"><i class="fa fa-fw fa-edit"></i></a>
+                          <a href="#!" onclick="deleteConfirm('<?php echo site_url('angsuran/delete/'.$nilai->id_pinjaman) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i></a>
+                          
+                        </td> -->
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                  
+                </table>
+              </div>
               <!-- Tabel detail simpanan pokok -->
 <div class="box-body table-responsive">
     <div class="box-header">
@@ -116,7 +173,7 @@
                 <th>Nama</th>
                 <th>Jumlah</th>
                 <th>Tanggal Dibayarkan</th>
-                <th>Aksi</th>
+           
             </tr>
         </thead>
         <tbody>
@@ -127,20 +184,26 @@
                     <td><?php cetak($nilai->nama) ?></td>
                     <td><?php echo "Rp. " . (number_format($nilai->jumlah, 2, ',', '.')) ?></td>
                     <td><?php cetak($nilai->tanggal_dibayar) ?></td>
-                    <td>
+                   <!--  <td>
                         <a class="btn btn-ref" href="<?php echo site_url('simpanan_pokok/edit/' . $nilai->id_simpanan_pokok) ?>"><i class="fa fa-fw fa-edit"></i></a>
                         <a href="#!" onclick="deleteConfirm('<?php echo site_url('simpanan_pokok/delete/' . $nilai->id_simpanan_pokok) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i></a>
-                    </td>
+                    </td> -->
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
+    <div class="box-header">
+                  <?php foreach ($tot_simpanan_pokok as $nilai): ?>
+                    <h1 class="label label-success" style="font-size: 18px;"> Total Simpanan Pokok : <?php echo "Rp. " . (number_format($nilai->jumlah,0,',','.')) ?></h1>
+                  <?php endforeach; ?>
+                  
+                </div>
 </div>
 
 <!-- Script JavaScript untuk inisialisasi DataTables -->
 <script>
     $(document).ready(function() {
-        $('#simpananPokokTable, #pinjamanTable').DataTable({
+        $('#simpananPokokTable, #pinjamanTable, #angsuranTable').DataTable({
             // Aktifkan fitur pencarian, penyaringan, dan paginasi
             searching: true,
         ordering: true,

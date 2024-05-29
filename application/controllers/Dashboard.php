@@ -45,6 +45,10 @@ class Dashboard extends MY_Controller {
 		$this->load->view('admin/dashboard', $data);
 	}
 
+	public function petunjuk() {
+		$this->load->view('admin/petunjuk');
+	}
+
 }
 
 /* End of file Controllername.php */

@@ -9,6 +9,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     <?php $this->load->view("admin/_includes/header.php") ?>
     <?php $this->load->view("admin/_includes/sidebar.php") ?>
+    <style>
+    #password_match_status {
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    #password_match_status span {
+        font-weight: bold;
+    }
+
+    #password_match_status .match {
+        color: green;
+    }
+
+    #password_match_status .mismatch {
+        color: red;
+    }
+</style>
+
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -49,16 +68,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                   </div>
                   <div class="form-group">
-                    <label>Password</label>
-                    <input name="password" class="form-control <?php echo form_error('password') ? 'is-invalid':'' ?>" placeholder="Masukan Password" type="text">
-                    <div class="invalid-feedback">
-                      <?php echo form_error('password') ?>
-                    </div>
-                    <small id="passwordHelp" class="form-text text-muted">
-    <span style="color: #28a745;">✓</span> Password harus terdiri dari minimal 5 karakter <br>
-    <span style="color: #28a745;">✓</span> Setidaknya ada satu huruf dan satu angka
-</small>
-                  </div>
+    <label><i class="fa fa-key"></i> Password</label>
+    <div class="input-group">
+        <input name="password" id="password" class="form-control <?php echo form_error('password') ? 'is-invalid':'' ?>" placeholder="Masukkan Password Baru" type="password">
+        <div class="input-group-addon">
+            <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password" style="cursor: pointer;"></span>
+        </div>
+    </div>
+    <div class="invalid-feedback">
+        <?php echo form_error('password') ?>
+    </div>
+    <small id="passwordHelp" class="form-text text-muted">
+        <span style="color: #28a745;">✓</span> Password harus terdiri dari minimal 5 karakter <br>
+        <span style="color: #28a745;">✓</span> Setidaknya ada satu huruf dan satu angka.
+    </small>
+</div>
+<div class="form-group">
+    <label><i class="fa fa-key"></i> Konfirmasi Password</label>
+    <div class="input-group">
+        <input name="confirm_password" id="confirm_password" class="form-control <?php echo form_error('confirm_password') ? 'is-invalid':'' ?>" placeholder="Konfirmasi Password" type="password">
+        <div class="input-group-addon">
+            <span toggle="#confirm_password" class="fa fa-fw fa-eye field-icon toggle-confirm-password" style="cursor: pointer;"></span>
+        </div>
+    </div>
+    
+    <div class="invalid-feedback">
+        <?php echo form_error('confirm_password') ?>
+    </div>
+    <small id="passwordHelp" class="form-text text-muted">
+        <span style="color: #28a745;">✓</span> Pastikan sama dengan password baru
+    </small>
+    <div id="password_match_status" class="form-text text-muted"></div>
+</div>
                
                   <div class="form-group">
                     <label>Nama</label>
@@ -134,6 +175,44 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  <!-- ./wrapper -->
  <?php $this->load->view("admin/_includes/bottom_script_view.php") ?>
  <!-- page script -->
+ <script>
+    $(".toggle-password").click(function() {
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input = $($(this).attr("toggle"));
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+        } else {
+            input.attr("type", "password");
+        }
+    });
+    $(".toggle-confirm-password").click(function() {
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input = $($(this).attr("toggle"));
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+        } else {
+            input.attr("type", "password");
+        }
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('#password, #confirm_password').on('keyup', function () {
+            var password = $('#password').val();
+            var confirm_password = $('#confirm_password').val();
+            var statusBox = $('#password_match_status');
 
+            if (password !== '' && confirm_password !== '') {
+                if (password === confirm_password) {
+                    statusBox.html('<span class="match">Password Cocok</span>');
+                } else {
+                    statusBox.html('<span class="mismatch">Password Tidak Sama</span>');
+                }
+            } else {
+                statusBox.html('');
+            }
+        });
+    });
+</script>
 </body>
 </html>

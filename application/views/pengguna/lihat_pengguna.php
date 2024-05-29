@@ -7,6 +7,12 @@
     <?php $this->load->view("admin/_includes/header.php") ?>
     <?php $this->load->view("admin/_includes/sidebar.php") ?>
     <script src="<?php echo base_url('js/custom_table.js'); ?>"></script>
+    <style>
+      .centered-header {
+  text-align: center;
+}
+
+    </style>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -77,7 +83,7 @@ if (isset($_SESSION['success_message'])) {
                         <th>Nama Lengkap</th>
                         <th>Level</th>
                         <th>Terakhir Login</th>
-                        <th>Aksi</th>
+                        <th class="centered-header">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -117,10 +123,12 @@ if (isset($_SESSION['success_message'])) {
 
 
 <!-- Tampilkan waktu terakhir login -->
-                          <td>
-                            <a class="btn btn-ref" href="<?php echo site_url('pengguna/edit/'.$value->id_user) ?>"><i class="fa fa-fw fa-edit"></i>Edit</a>
-                            <a href="#!" onclick="deleteConfirm('<?php echo site_url('pengguna/delete/'.$value->id_user) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i>Hapus</a>
-                          </td>
+<td>
+    <a class="btn btn-ref" href="<?php echo site_url('pengguna/edit/'.$value->id_user) ?>"><i class="fa fa-fw fa-edit"></i>Edit</a>
+    <a href="#!" onclick="deleteConfirm('<?php echo site_url('pengguna/delete/'.$value->id_user) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i>Hapus</a>
+    <a href="#!" onclick="resetPasswordConfirm('<?php echo site_url('pengguna/reset_password/'.$value->id_user) ?>')" class="btn btn-warning"><i class="fa fa-fw fa-key"></i>Reset Password</a>
+</td>
+
                         </tr>
                       <?php endforeach; ?>
                     </tbody>
@@ -170,6 +178,24 @@ if (isset($_SESSION['success_message'])) {
     </div>
   </div>
 </div>
+
+<!-- Logout Delete Confirmation-->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">Apakah anda yakin ingin mereset password?</h4>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+                <a id="btn-reset-password" class="btn btn-warning" href="#">Reset Password</a>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- ./wrapper -->
 <?php $this->load->view("admin/_includes/bottom_script_view.php") ?>
 <!-- page script -->
@@ -178,6 +204,13 @@ if (isset($_SESSION['success_message'])) {
     $('#btn-delete').attr('href', url);
     $('#deleteModal').modal();
   }
+</script>
+
+<script>
+    function resetPasswordConfirm(url){
+        $('#btn-reset-password').attr('href', url);
+        $('#resetPasswordModal').modal();
+    }
 </script>
 </body>
 </html>

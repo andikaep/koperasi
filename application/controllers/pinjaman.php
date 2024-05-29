@@ -15,10 +15,13 @@ class Pinjaman extends MY_Controller
     }
 
     public function index()
-    {
-        $data["pinjaman"] = $this->Pinjaman_model->getListPinjaman();
-        $this->load->view("pinjaman/lihat_pinjaman", $data);
-    }
+{
+    $data['total_pinjaman'] = $this->Pinjaman_model->countAll();
+
+    $data["pinjaman"] = $this->Pinjaman_model->getListPinjaman();
+    $this->load->view("pinjaman/lihat_pinjaman", $data);
+}
+
 
     public function simulasi()
     {

@@ -78,13 +78,13 @@ class Pengguna extends MY_Controller
     
         // Set aturan validasi
         $this->form_validation->set_rules('password', 'Password', 'required|regex_match[/^(?=.*[a-zA-Z])(?=.*\d).{5,}$/]|matches[confirm_password]', array(
-            'required' => '<span style="color: #ff6347;">Ayo! </span>Password harus diisi.',
-            'regex_match' => '<span style="color: #ff6347;">Ayo! </span>Password harus terdiri dari minimal 5 karakter yang terdiri dari setidaknya satu huruf dan satu angka.',
-            'matches' => '<span style="color: #ff6347;">Ayo! </span>Konfirmasi Password tidak sama dengan password baru.'
+            'required' => '<span style="color: #ff6347;">Ulangi! </span>Password harus diisi.',
+            'regex_match' => '<span style="color: #ff6347;">Ulangi! </span>Password harus terdiri dari minimal 5 karakter yang terdiri dari setidaknya satu huruf dan satu angka.',
+            'matches' => '<span style="color: #ff6347;">Ulangi! </span>Konfirmasi Password tidak sama dengan password baru.'
         ));
         
         $this->form_validation->set_rules('confirm_password', 'Konfirmasi Password', 'required', array(
-            'required' => '<span style="color: #ff6347;">Ayo! </span>Konfirmasi Password harus diisi.'
+            'required' => '<span style="color: #ff6347;">Ulangi! </span>Konfirmasi Password harus diisi.'
         ));
         
     
@@ -124,11 +124,28 @@ if ($this->form_validation->run()) {
         $this->load->view('pengguna/edit_password', $data);
     }
     
+
+    public function reset_password($id) {
+        // Reset password ke password yang sudah ditentukan
+        $new_password = "koperasi123";
     
+        // Reset password pengguna
+        $this->Pengguna_model->reset_password($id, $new_password);
+    
+        // Ambil nama pengguna dari database
+        $pengguna = $this->Pengguna_model->getById($id);
+        $nama_pengguna = $pengguna->nama;
+    
+        // Set pesan sukses dengan nama pengguna yang tebal dan berwarna merah
+        $this->session->set_flashdata('success', 'Password <span style="font-weight: bold; color: black;">' . $nama_pengguna . '</span> berhasil direset.');
+    
+        // Redirect ke halaman pengguna
+        redirect('pengguna/index');
+    }
     
 
     public function delete($id){
-	    $this->Pengguna_model->delete($id); // Panggil fungsi delete() yang ada di SiswaModel.php
+	    $this->Pengguna_model->delete($id); // Panggil fungsi delete() yang ada di Model.php
 	    $this->session->set_flashdata('success', 'Data Pengguna Berhasil Dihapus');
 	    redirect('pengguna/index');
 	}

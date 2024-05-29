@@ -8,6 +8,53 @@
     color: #a94442; /* Ganti dengan warna teks yang Anda inginkan */
     /* Anda juga dapat menambahkan properti CSS lainnya sesuai kebutuhan */
 }
+
+.btn-info {
+    position: relative;
+}
+
+.btn-info:hover:after {
+    content: "Lihat Kurang Bayar";
+    position: absolute;
+    top: -30px;
+    left: 0;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+.action-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.action-buttons .edit-button,
+.action-buttons .delete-button {
+    margin-left: 5px;
+}
+
+.btn-info {
+    position: relative;
+}
+
+.btn-info:hover:after {
+    content: "Lihat Kurang Bayar";
+    position: absolute;
+    top: -30px;
+    left: 0;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.edit-button:hover + .btn-info:after,
+.delete-button:hover + .btn-info:after {
+    display: none;
+}
+
 </style>
 <div class="wrapper">
 
@@ -80,8 +127,9 @@
                       <th>Jumlah Pinjaman</th>
                       <th>Bunga</th>
                       <th>Total Bayar</th>
-                      <th>Jumlah Angsuran</th>
-                      <th>Kurang Bayar</th>
+                      <th>Angsuran</th>
+                      
+                    
                       <th>Aksi</th>
                     </tr>
                   </thead>
@@ -90,42 +138,55 @@
                     <?php $no = 1;?>
                     <?php $totalRows = count($angsuran); ?>
                     <?php foreach ($angsuran as $key => $value): ?>
-                      <?php 
-    // Hitung total angsuran yang telah dibayarkan untuk pinjaman ini
-    $total_angsuran_dibayarkan = $this->db->query("SELECT SUM(jumlah_angsuran) AS total_angsuran FROM angsuran WHERE id_pinjaman = '{$value->id_pinjaman}'")->row()->total_angsuran;
-    
-    // Tentukan total yang seharusnya dibayarkan
-    $total_yang_harus_dibayarkan = $value->jumlah_pinjaman + ($value->jumlah_pinjaman * $value->bunga / 100);
-    
-    // Hitung nilai kurang untuk angsuran ini
-    $kurang = $total_yang_harus_dibayarkan - $total_angsuran_dibayarkan;
+    <?php 
+        // Hitung total angsuran yang telah dibayarkan untuk pinjaman ini
+        $total_angsuran_dibayarkan = $this->db->query("SELECT SUM(jumlah_angsuran) AS total_angsuran FROM angsuran WHERE id_pinjaman = '{$value->id_pinjaman}'")->row()->total_angsuran;
+        
+        // Tentukan total yang seharusnya dibayarkan
+        $total_yang_harus_dibayarkan = $value->jumlah_pinjaman + ($value->jumlah_pinjaman * $value->bunga / 100);
+        
+        // Hitung nilai kurang untuk angsuran ini
+        $kurang = $total_yang_harus_dibayarkan - $total_angsuran_dibayarkan;
+        $total_pinjaman_bunga = $value->jumlah_pinjaman + ($value->jumlah_pinjaman * $value->bunga / 100);
+        // Tentukan nomor pinjaman saat ini dan nomor pinjaman berikutnya
+        $currentNoPinjaman = $value->no_pinjaman;
+        $nextNoPinjaman = ($key + 1 < count($angsuran)) ? $angsuran[$key + 1]->no_pinjaman : null;
 
-    $total_pinjaman_bunga = $value->jumlah_pinjaman + ($value->jumlah_pinjaman * $value->bunga / 100);
-
-    // Tentukan nomor pinjaman saat ini dan nomor pinjaman berikutnya
-    $currentNoPinjaman = $value->no_pinjaman;
-    $nextNoPinjaman = ($key + 1 < count($angsuran)) ? $angsuran[$key + 1]->no_pinjaman : null;
-
+        // Cek apakah ini baris terakhir untuk nomor pinjaman tertentu
+        $isLastRow = ($nextNoPinjaman !== null && $currentNoPinjaman !== $nextNoPinjaman) || $nextNoPinjaman === null;
     ?>
-    
-                      
-    <tr <?php if ($nextNoPinjaman !== null && $currentNoPinjaman !== $nextNoPinjaman): ?>class="last-row-before-next-loan"<?php endif; ?>>
-                        <td><?php cetak($no++) ?></td>
-                         <td><?php cetak($value->nama)  ?></td>
-                        <td><?php cetak($value->no_pinjaman)  ?></td>
-                        <td><?php cetak($value->no_angsuran)  ?></td>
-                        <td><?php cetak($value->tanggal_peminjaman)  ?></td>
-                        <td><?php echo "Rp. " . (number_format($value->jumlah_pinjaman,2,',','.')) ?></td>
-                        <td><?php echo cetak($value->bunga) . '%' ?></td>
-                        <td><?php echo "Rp. " . number_format($total_pinjaman_bunga, 2, ',', '.'); ?></td>
-                        <td><?php echo "Rp. " . (number_format($value->jumlah_angsuran,2,',','.')) ?></td>
-                        <td><strong><?php echo "Rp. " . number_format($kurang, 2, ',', '.'); ?></strong></td>
-                        <td>
-                          <a class="btn btn-ref" href="<?php echo site_url('angsuran/edit/'.$value->id_angsuran) ?>"><i class="fa fa-fw fa-edit"></i></a><br><br>
-                          <a href="#!" onclick="deleteConfirm('<?php echo site_url('angsuran/delete/'.$value->id_angsuran) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i></a>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
+    <tr <?php if ($isLastRow): ?>class="last-row-before-next-loan"<?php endif; ?>>
+        <td><?php cetak($no++) ?></td>
+        <td><?php cetak($value->nama)  ?></td>
+        <td><?php cetak($value->no_pinjaman)  ?></td>
+        <td><?php cetak($value->no_angsuran)  ?></td>
+        <td><?php cetak($value->tanggal_peminjaman)  ?></td>
+        <td><?php echo "Rp. " . (number_format($value->jumlah_pinjaman,2,',','.')) ?></td>
+        <td><?php echo cetak($value->bunga) . '%' ?></td>
+        <td><?php echo "Rp. " . number_format($total_pinjaman_bunga, 2, ',', '.'); ?></td>
+        
+          <td class="center-button"><?php echo "Rp. " . (number_format($value->jumlah_angsuran,2,',','.')) ?>
+          <br>
+          <?php if ($isLastRow): ?>
+          
+    <div class="action-buttons" style="display: flex; justify-content: center;">
+        <?php $formattedKurang = number_format($kurang, 0, ',', '.'); ?>
+        <button class="btn btn-info" onclick="showKurangBayar('<?php echo $formattedKurang; ?>')">
+            <i class="fa fa-eye" aria-hidden="true"></i>
+        </button>
+    </div>
+</td>
+
+        <?php else: ?>
+            
+        <?php endif; ?>
+        <td>
+            <a class="btn btn-ref" href="<?php echo site_url('angsuran/edit/'.$value->id_angsuran) ?>"><i class="fa fa-fw fa-edit"></i></a><br><br>
+            <a href="#!" onclick="deleteConfirm('<?php echo site_url('angsuran/delete/'.$value->id_angsuran) ?>')" class="btn btn-mandarin"><i class="fa fa-fw fa-trash"></i></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+
                   </tbody>
                 <!--  <tfoot>
                     <tr>
@@ -153,6 +214,32 @@
     </section>
     <!-- /.content -->
   </div>
+  <script>
+    function showKurangBayar(kurangBayarValue) {
+        $('#kurangBayarValue').text("Kurang Bayar: Rp. " + kurangBayarValue);
+        $('#kurangBayarModal').modal('show');
+    }
+</script>
+
+  <!-- Modal Kurang Bayar -->
+<div id="kurangBayarModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Kurang Bayar</h4>
+      </div>
+      <div class="modal-body">
+        <p id="kurangBayarValue"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- /.content-wrapper -->
   <?php $this->load->view("admin/_includes/footer.php") ?>
   <?php $this->load->view("admin/_includes/control_sidebar.php") ?>

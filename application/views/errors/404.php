@@ -108,7 +108,7 @@
         <h1 class="text-9xl font-bold mb-4 rotate">404</h1>
         <p class="text-3xl mb-8 bounce">Not Found</p>
         <p class="text-1xl mb-8 pulse">Anda tersesat, segera kembali</p>
-        <a href="Dashboard" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-block">Back to Home</a>
+        <a href="<?php echo base_url('') ?>" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-block">Back to Home</a>
     </div>
 </body>
 
