@@ -6,7 +6,7 @@
 
 class Anggota extends MY_Controller
 {
-    private $filename = "import_data"; // Kita tentukan nama filenya
+    private $filename = "import_data";
 	public function __construct()
     {
         parent::__construct();
