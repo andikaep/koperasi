@@ -51,7 +51,7 @@ border: 3px solid purple;
 border-radius: 5px;
 padding: 20px;
 text-align: center;
-background-color: #6a0dad;
+background-color: #4287f5;
 }
 
 /* Display top horizontal bar that contain some information. */
@@ -62,7 +62,7 @@ h1 {
 
     padding: 23px;
 
-    background-color: purple;
+    background-color: #4287f5;
 
     color: white;
 
